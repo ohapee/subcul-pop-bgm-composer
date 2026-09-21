@@ -1,0 +1,677 @@
+/* ==========================================================================
+   SUBCUL POP BGM COMPOSER — サブカルポップBGMコンポーザー
+   トーン＆マナー: レトロフューチャー純喫茶 × メロンソーダ × Y2Kサイバーギーク
+   ========================================================================== */
+
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* メロンソーダ＆カセットテープ パレット */
+  --bg: #f4f7f4;                 /* 爽やかなペールミントクリーム */
+  --bg-card: #ffffff;            /* クリーンな純白カード */
+  --bg-sub: #e6f4ea;             /* メロンソーダの下地 */
+  --bg-input: #ffffff;
+  --bg-console: #1e2422;         /* カセットテープ・プレーヤーのダークグリーンチャコール */
+  --bg-screen: #f9fbf9;
+
+  --text-main: #1c2621;          /* 深みのあるフォレストチャコール */
+  --text-sub: #52665b;           /* 落ち着いた補助色 */
+  --border-color: #1e2422;       /* キリッとした2pxのフチ */
+
+  /* サブカル・ネオンアクセント */
+  --green-soda: #10b981;         /* メロンソーダグリーン */
+  --green-bright: #34d399;
+  --pink-cherry: #f43f5e;        /* チェリーレッド / ネオンピンク */
+  --yellow-lemon: #facc15;       /* レモンイエロー */
+  --blue-cyber: #38bdf8;         /* サイバーシアン */
+  --purple-cassette: #a855f7;    /* カセットパープル */
+
+  --shadow-main: 4px 4px 0px var(--border-color);
+  --shadow-small: 2px 2px 0px var(--border-color);
+  --shadow-active: 1px 1px 0px var(--border-color);
+}
+
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: radial-gradient(#ccead7 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+  color: var(--text-main);
+  font-family: "Space Grotesk", "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.6;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 20px 80px;
+}
+
+/* ==========================================================================
+   ヘッダー（カセットデッキ＆メロンソーダ調）
+   ========================================================================== */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: var(--bg-card);
+  border: 2.5px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: var(--shadow-main);
+  padding: 20px 26px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+/* ヘッダー上部のサブカルリボン */
+header::before {
+  content: "";
+  position: absolute;
+  top: -2.5px; left: 24px; right: 24px;
+  height: 5px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--green-soda) 0px, var(--green-soda) 20px,
+    var(--pink-cherry) 20px, var(--pink-cherry) 40px,
+    var(--yellow-lemon) 40px, var(--yellow-lemon) 60px,
+    var(--blue-cyber) 60px, var(--blue-cyber) 80px
+  );
+  border: 2px solid var(--border-color);
+  border-bottom: none;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow-small);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.brand-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand h1 {
+  font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+  margin: 0 0 4px;
+  color: var(--text-main);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.brand .tagline {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--text-sub);
+  font-weight: 600;
+}
+
+.header-badge {
+  background: var(--bg-console);
+  color: var(--green-bright);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--border-color);
+  box-shadow: 2px 2px 0px var(--border-color);
+}
+
+/* ==========================================================================
+   2カラムレイアウト
+   ========================================================================== */
+.grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 950px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* パネル */
+section.panel {
+  background: var(--bg-card);
+  border: 2.5px solid var(--border-color);
+  border-radius: 18px;
+  box-shadow: var(--shadow-main);
+  padding: 20px 22px;
+  margin-bottom: 22px;
+  position: relative;
+}
+
+h2 {
+  font-size: 0.94rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px dashed #cbdad0;
+  padding-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+
+h2 .badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  background: var(--bg-sub);
+  color: var(--green-soda);
+  border: 1.5px solid var(--border-color);
+  box-shadow: 1.5px 1.5px 0px var(--border-color);
+  border-radius: 6px;
+}
+
+/* ==========================================================================
+   サブカルポップ チップ
+   ========================================================================== */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 7px 13px;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text-main);
+  box-shadow: var(--shadow-small);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.1s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chip:hover {
+  background: var(--bg-sub);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--border-color);
+}
+
+.chip:active {
+  transform: translate(1px, 1px);
+  box-shadow: var(--shadow-active);
+}
+
+/* 選択状態 */
+.chip.on {
+  background: var(--green-soda);
+  color: #ffffff;
+  transform: translate(1px, 1px);
+  box-shadow: var(--shadow-active);
+}
+
+#motifChips .chip.on {
+  background: var(--green-soda);
+  color: #ffffff;
+}
+
+#instChips .chip.on {
+  background: var(--blue-cyber);
+  color: #0f172a;
+}
+
+#sfxChips .chip.on {
+  background: var(--yellow-lemon);
+  color: #1f2421;
+}
+
+#negativeChips .chip.on {
+  background: #3f3f46;
+  color: #ffffff;
+}
+
+#durationChips .chip.on {
+  background: var(--purple-cassette);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   フォーム・入力
+   ========================================================================== */
+.field {
+  margin-bottom: 16px;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+label.small {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-sub);
+  margin-bottom: 8px;
+}
+
+input[type="text"], select {
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  background: var(--bg-input);
+  color: var(--text-main);
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  padding: 9px 12px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input[type="text"]:focus, select:focus {
+  border-color: var(--green-soda);
+  box-shadow: 2px 2px 0px var(--green-soda);
+}
+
+/* テンポ */
+.tempo-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+input[type="range"] {
+  flex: 1;
+  accent-color: var(--green-soda);
+  cursor: pointer;
+}
+
+.tempo-readout {
+  font-size: 1.25rem;
+  min-width: 105px;
+  text-align: right;
+  color: var(--green-soda);
+  font-weight: 800;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.tempo-readout span {
+  font-size: 0.7rem;
+  color: var(--text-sub);
+}
+
+/* ==========================================================================
+   カセットデッキ調 プレビュープレイヤー
+   ========================================================================== */
+.preview-player {
+  background: var(--bg-console);
+  border: 2.5px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: var(--shadow-small);
+  padding: 14px 18px;
+  margin-top: 16px;
+  color: #ffffff;
+  position: relative;
+}
+
+.preview-player::before {
+  content: "CASSETTE TAPE PLAYBACK // 8-BIT & RHODES CHILL";
+  display: block;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--green-bright);
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.preview-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.preview-btn {
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 9px 18px;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  background: var(--green-bright);
+  color: #1e2422;
+  cursor: pointer;
+  box-shadow: 2px 2px 0px #000000;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.1s;
+}
+
+.preview-btn:hover {
+  background: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #000000;
+}
+
+.preview-btn.playing {
+  background: var(--pink-cherry);
+  color: #ffffff;
+}
+
+.volume-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #d1d5db;
+}
+
+.volume-row input {
+  width: 75px;
+  accent-color: var(--green-bright);
+}
+
+/* 16ステップ LEDインジケーター */
+.step-tracker {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.step-led {
+  height: 8px;
+  background: #2a3330;
+  border-radius: 2px;
+  transition: background-color 0.05s, transform 0.05s;
+}
+
+.step-led.active {
+  background: var(--green-bright);
+  box-shadow: 0 0 8px var(--green-bright);
+  transform: scaleY(1.3);
+}
+
+.step-led:nth-child(4n+1) {
+  background: #394642;
+}
+
+/* ==========================================================================
+   ボタン群
+   ========================================================================== */
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+button.primary, button.ghost {
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  padding: 11px 20px;
+  border-radius: 10px;
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  box-shadow: var(--shadow-small);
+  transition: all 0.1s;
+}
+
+button.primary {
+  background: var(--green-soda);
+  color: #ffffff;
+}
+
+button.primary:hover {
+  background: var(--green-bright);
+  color: #1e2422;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--border-color);
+}
+
+button.ghost {
+  background: var(--bg-card);
+  color: var(--text-main);
+}
+
+button.ghost:hover {
+  background: var(--bg-sub);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--border-color);
+}
+
+/* プリセットアイテム */
+.preset-item {
+  display: inline-flex;
+  align-items: center;
+  box-shadow: var(--shadow-small);
+  border-radius: 8px;
+}
+
+.preset-item .chip {
+  box-shadow: none;
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.preset-del {
+  border: 2px solid var(--border-color);
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background: var(--bg-card);
+  color: var(--pink-cherry);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.85rem;
+  padding: 7px 9px;
+  line-height: 1;
+}
+
+.preset-del:hover {
+  background: var(--pink-cherry);
+  color: #ffffff;
+}
+
+.preset-empty {
+  color: var(--text-sub);
+  font-size: 0.84rem;
+}
+
+/* ==========================================================================
+   出力・構成
+   ========================================================================== */
+.lang-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lang-toggle button {
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text-sub);
+  cursor: pointer;
+}
+
+.lang-toggle button.on {
+  background: var(--green-soda);
+  color: #ffffff;
+}
+
+textarea {
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+  background: var(--bg-screen);
+  color: var(--text-main);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 13px 15px;
+  font-family: "SFMono-Regular", Consolas, "Noto Sans JP", monospace;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  outline: none;
+}
+
+textarea:focus {
+  border-color: var(--green-soda);
+}
+
+.textarea-mini {
+  min-height: 65px;
+  font-size: 0.82rem;
+}
+
+.copy-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.copy-row button {
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 7px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--green-bright);
+  color: #1e2422;
+  cursor: pointer;
+  box-shadow: 2px 2px 0px var(--border-color);
+  transition: all 0.1s;
+}
+
+.copy-row button:hover {
+  background: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--border-color);
+}
+
+/* タイムライン画面 */
+.screen {
+  background: var(--bg-screen);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.screen-row {
+  display: grid;
+  grid-template-columns: 66px 1fr;
+  gap: 14px;
+  padding: 11px 15px;
+  border-bottom: 2px dashed #cbdad0;
+  align-items: baseline;
+}
+
+.screen-row:last-child {
+  border-bottom: none;
+}
+
+.screen-time {
+  color: var(--pink-cherry);
+  font-size: 0.84rem;
+  font-weight: 800;
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+.screen-body .lab {
+  color: var(--text-main);
+  font-size: 0.84rem;
+  font-weight: 800;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.screen-body .desc {
+  color: var(--text-sub);
+  font-size: 0.82rem;
+}
+
+.empty-note {
+  color: var(--text-sub);
+  font-size: 0.85rem;
+  padding: 16px;
+}
+
+/* トースト通知 */
+.flash {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--yellow-lemon);
+  color: #1e2422;
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow-main);
+  border-radius: 999px;
+  padding: 10px 24px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 1000;
+}
+
+.flash.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+footer {
+  margin-top: 36px;
+  color: var(--text-sub);
+  font-size: 0.8rem;
+  text-align: center;
+  line-height: 1.8;
+  font-weight: 600;
+}

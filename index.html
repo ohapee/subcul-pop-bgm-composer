@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f7f4">
+  <meta name="description" content="純喫茶×ネオ渋谷系×ピクセルチル ── 集中と創作のための作業用ポップBGMジェネレーター">
+
+  <title>🍹 サブカルポップBGMコンポーザー | 集中・作業用BGM特化</title>
+
+  <!-- Google Fonts: Space Grotesk & Noto Sans JP -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ヘッダー（カセットデッキ＆メロンソーダ調） -->
+  <header>
+    <div class="brand-wrapper">
+      <div class="brand-icon">
+        <img src="assets/icon-192.png" alt="サブカルポップ アイコン">
+      </div>
+      <div class="brand">
+        <h1>🍹 サブカルポップBGMコンポーザー</h1>
+        <p class="tagline">純喫茶 × ネオ渋谷系 × ピクセルチル ── 集中と創作のための作業用ポップBGM</p>
+      </div>
+    </div>
+    <div class="header-badge">Lo-Fi × 8bit × Chill Pop</div>
+  </header>
+
+  <!-- メインコンテンツ（2カラム） -->
+  <main class="grid">
+
+    <!-- 左カラム：設定パネル群 -->
+    <div class="column-left">
+
+      <!-- 1. 世界観・曲名・モチーフ -->
+      <section class="panel">
+        <h2>1. 世界観・曲名・モチーフ <span class="badge">MOTIF</span></h2>
+        
+        <div class="field">
+          <label class="small" for="trackTitleInput">曲名（任意・世界観や情景がプロンプトに反映されます）</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="trackTitleInput" placeholder="例: 純喫茶メロンソーダ" value="純喫茶メロンソーダ">
+            <button type="button" class="chip" id="randomTitleBtn" title="曲名ガチャ" style="white-space: nowrap; padding: 0 14px;">🎲 ガチャ</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="small">サブカル・モチーフ（1つ選択）</label>
+          <div id="motifChips" class="chip-row"></div>
+        </div>
+      </section>
+
+      <!-- 2. サウンド編成・質感 -->
+      <section class="panel">
+        <h2>2. サウンド編成・質感 <span class="badge">SOUNDS</span></h2>
+
+        <div class="field">
+          <label class="small">楽器・音色（複数選択可）</label>
+          <div id="instChips" class="chip-row"></div>
+        </div>
+
+        <div class="field">
+          <label class="small">サブカル環境音・ノイズ（複数選択可）</label>
+          <div id="sfxChips" class="chip-row"></div>
+        </div>
+
+        <div class="field">
+          <label class="small" for="sfxDensity">効果音・環境音の頻度</label>
+          <select id="sfxDensity">
+            <option value="none">使わない (ビートと楽器のみ)</option>
+            <option value="occasional" selected>たまに小気味よく挟む (推奨)</option>
+            <option value="frequent">遊び心いっぱいに散りばめる</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- 3. テンポ・調性・集中モード -->
+      <section class="panel">
+        <h2>3. テンポ・調性・集中モード <span class="badge">GROOVE</span></h2>
+
+        <div class="field">
+          <label class="small">テンポ（BPM）</label>
+          <div class="tempo-row">
+            <input type="range" id="tempoRange" min="70" max="130" value="96">
+            <div class="tempo-readout" id="tempoReadout">96<span> BPM</span></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="small" for="keySelect">調性・コード進行スタイル</label>
+          <select id="keySelect">
+            <option value="marusa_eb" selected>丸サ進行 (Just the Two of Us / 都会的・最高にお洒落)</option>
+            <option value="city_maj7">シティポップ・メジャー7th (爽快で透明感のあるアーバン調)</option>
+            <option value="neo_soul_min">ネオソウル・マイナー7th (深く集中できる知的グルーヴ)</option>
+            <option value="sweet_penta">渋谷系ポップペンタ (明るく弾む陽気なレトロ)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="small" for="focusSelect">集中モード（作業用チューニング）</label>
+          <select id="focusSelect">
+            <option value="flow" selected>集中フロー (一定リズム・邪魔しない)</option>
+            <option value="breezy">軽快ポップ (気分がアガる・適度な変化)</option>
+            <option value="night_chill">深夜チル (まったり夜更かし作業)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="small">曲の長さ（尺）</label>
+          <div id="durationChips" class="chip-row"></div>
+        </div>
+
+        <div class="field">
+          <label class="small">除外要素（作業を邪魔しないためのネガティブ指定）</label>
+          <div id="negativeChips" class="chip-row"></div>
+        </div>
+
+        <!-- カセットデッキ調 プレビュープレイヤー -->
+        <div class="preview-player">
+          <div class="preview-main-row">
+            <button type="button" class="preview-btn" id="previewToggleBtn">▶ PLAY (エレピ×8bit試聴)</button>
+            <div class="volume-row">
+              <span>VOLUME</span>
+              <input type="range" id="previewVolume" min="0" max="1" step="0.05" value="0.7">
+            </div>
+          </div>
+          <!-- 16ステップ LEDインジケーター -->
+          <div class="step-tracker" id="stepTracker">
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+            <div class="step-led"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- プリセット・共有 -->
+      <section class="panel">
+        <h2>プリセット・共有 <span class="badge">PRESETS</span></h2>
+
+        <div class="field">
+          <label class="small" for="presetNameInput">設定の保存</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="presetNameInput" placeholder="プリセット名 (空欄なら曲名で保存)">
+            <button type="button" class="primary" id="savePresetBtn" style="white-space: nowrap; padding: 0 16px;">💾 保存</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="small">保存済みプリセット一覧</label>
+          <div id="presetChips" class="chip-row"></div>
+        </div>
+
+        <div class="field" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px;">
+          <button type="button" class="chip" id="shareUrlBtn">🔗 共有URLをコピー</button>
+          <button type="button" class="chip" id="exportPresetBtn">📤 JSON書き出し</button>
+          <button type="button" class="chip" id="importPresetBtn">📥 JSON読み込み</button>
+          <input type="file" id="importPresetFile" accept=".json" style="display: none;">
+        </div>
+      </section>
+
+      <!-- コマンドボタン群 -->
+      <div class="actions">
+        <button type="button" class="primary" id="genBtn">✨ プロンプト再生成</button>
+        <button type="button" class="ghost" id="randomBtn">🎲 おまかせ</button>
+        <button type="button" class="ghost" id="resetBtn">↺ リセット</button>
+      </div>
+
+    </div>
+
+    <!-- 右カラム：出力パネル群 -->
+    <div class="column-right">
+
+      <!-- AIプロンプト出力 -->
+      <section class="panel">
+        <h2>AI音楽プロンプト出力 <span class="badge">OUTPUT</span></h2>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+          <div class="lang-toggle" id="langToggle">
+            <button type="button" class="on" data-lang="ja">日本語</button>
+            <button type="button" data-lang="en">English</button>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <select id="aiTargetSelect" style="width: auto; padding: 5px 10px; font-size: 0.8rem;">
+              <option value="flow" selected>Google Flow Music</option>
+              <option value="suno_udio">Suno / Udio 共通</option>
+              <option value="plain">シンプル文章形式</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" id="embedTimelineCheck"> プロンプト本文に秒数タイムラインを展開する
+          </label>
+        </div>
+
+        <textarea id="promptOut" readonly spellcheck="false" placeholder="プロンプトがここに生成されます..."></textarea>
+        
+        <div class="copy-row">
+          <span style="font-size: 0.78rem; color: var(--text-sub);">AI音楽生成ツールにそのまま貼り付けて利用できます</span>
+          <button type="button" id="copyBtn">📋 プロンプトをコピー</button>
+        </div>
+
+        <!-- ネガティブプロンプト領域 -->
+        <div id="negativeSection" style="display: none; margin-top: 16px; border-top: 2px dashed #cbdad0; padding-top: 14px;">
+          <label class="small" for="negativeOut">除外指示（Negative Prompt / Style Avoid）</label>
+          <textarea id="negativeOut" class="textarea-mini" readonly spellcheck="false"></textarea>
+          <div class="copy-row">
+            <span style="font-size: 0.78rem; color: var(--text-sub);">除外指定欄（Suno等のNegative Prompt）に入力してください</span>
+            <button type="button" id="copyNegBtn">📋 除外指示をコピー</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- タイムライン展開画面 -->
+      <section class="panel">
+        <h2>トラック展開タイムライン <span class="badge">TIMELINE</span></h2>
+        <div id="timeline" class="screen"></div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- フッター -->
+  <footer>
+    <p>🍹 <strong>サブカルポップBGMコンポーザー</strong> ── 純喫茶 × ネオ渋谷系 × ピクセルチル</p>
+    <p>「ゲームBGM」の小気味よさと「ゆるかわ」の心地よさを融合した作業用ポップBGMジェネレーター<br>
+    Web Audio APIによるリアルタイム・エレピ＆8bit合成プレビュー搭載 / PWA対応</p>
+  </footer>
+
+</div>
+
+<!-- トースト通知 -->
+<div id="flash" class="flash"></div>
+
+<!-- アプリケーションモジュール -->
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
