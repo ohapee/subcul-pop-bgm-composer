@@ -525,38 +525,68 @@ class SubculAudioEngine {
 
       const scaleData = this.getScaleData(state.key);
       const chordIndex = Math.floor(step / 4) % scaleData.chords.length;
+      const isSparse = Boolean(state.sparseNotes);
 
       // 1. ローズピアノ（小節や拍の頭でコード演奏）
-      if (step % 4 === 0) {
-        this.playRhodesChord(scaleData.chords[chordIndex], now, stepDuration * 3.8);
+      // 音数極小の場合は1小節に1回のみ、ゆったりと余韻を残す
+      if (isSparse ? (step === 0) : (step % 4 === 0)) {
+        this.playRhodesChord(scaleData.chords[chordIndex], now, isSparse ? stepDuration * 7.0 : stepDuration * 3.8);
       }
 
       // 2. ローファイビート
-      // キック (1拍目・3拍目の裏など)
-      if (step === 0 || step === 10) {
-        this.playLofiKick(now);
-      }
-      // スネア (2拍目・4拍目)
-      if (step === 4 || step === 12) {
-        this.playLofiSnare(now);
-      }
-      // ハイハット (スウィングシャッフル)
-      if (step % 2 === 0) {
-        this.playLofiHihat(now);
+      if (isSparse) {
+        // 音数極小: キックとスネアを必要最小限に抑え、静寂をキープ
+        if (step === 0) {
+          this.playLofiKick(now);
+        }
+        if (step === 8) {
+          this.playLofiSnare(now);
+        }
+        if (step % 4 === 0) {
+          this.playLofiHihat(now);
+        }
+      } else {
+        // 通常ビート
+        if (step === 0 || step === 10) {
+          this.playLofiKick(now);
+        }
+        if (step === 4 || step === 12) {
+          this.playLofiSnare(now);
+        }
+        if (step % 2 === 0) {
+          this.playLofiHihat(now);
+        }
       }
 
-      // 3. ウォーキングベース (8分音符で小気味よくステップ)
-      if (step % 2 === 0) {
-        const root = scaleData.rootBasses[chordIndex];
-        const bassNote = (step % 4 === 2) ? root * 1.25 : root;
-        this.playWalkingBass(bassNote, now, stepDuration * 1.6);
+      // 3. ウォーキングベース
+      if (isSparse) {
+        // 音数極小: 1小節に1〜2音だけ静かにルート音を響かせる
+        if (step === 0 || step === 6) {
+          const root = scaleData.rootBasses[chordIndex];
+          this.playWalkingBass(root, now, stepDuration * 3.0);
+        }
+      } else {
+        // 通常: 8分音符で小気味よくステップ
+        if (step % 2 === 0) {
+          const root = scaleData.rootBasses[chordIndex];
+          const bassNote = (step % 4 === 2) ? root * 1.25 : root;
+          this.playWalkingBass(bassNote, now, stepDuration * 1.6);
+        }
       }
 
-      // 4. メロディ / アルペジオ (選択されたメロディ楽器に応じて発音)
+      // 4. メロディ / アルペジオ
       const arpNotes = scaleData.arpFreqs;
       const arpPattern = [0, 2, 4, 7, 5, 3, 2, 1, 0, 4, 6, 7, 5, 4, 2, 1];
-      const freq = arpNotes[arpPattern[step % 16] % arpNotes.length];
-      this.playMelodyLead(freq, now, stepDuration * 0.85, state.melodyInst);
+      if (isSparse) {
+        // 音数極小: 16ステップ中2回だけ、ポツリ…ポツリ…と優しく音を置く
+        if (step === 3 || step === 10) {
+          const freq = arpNotes[arpPattern[step] % arpNotes.length];
+          this.playMelodyLead(freq, now, stepDuration * 2.2, state.melodyInst);
+        }
+      } else {
+        const freq = arpNotes[arpPattern[step % 16] % arpNotes.length];
+        this.playMelodyLead(freq, now, stepDuration * 0.85, state.melodyInst);
+      }
 
       // 5. ゲーム効果音・環境音のアクセント自動挿入
       if (state.density !== 'none' && state.sfx && state.sfx.size > 0) {

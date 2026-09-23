@@ -123,6 +123,7 @@ export const FOCUS_MODES = {
 // ネガティブプロンプト（集中を妨げる要素の除外）
 export const NEGATIVE_OPTIONS = [
   { id: 'vocals_distract', ja: '人の歌声・騒がしいボーカル・ラップ (集中妨害防止)', en: 'vocals, singing, rapping, aggressive speech, distractions' },
+  { id: 'dense_notes', ja: '音の詰め込みすぎ・過密なフレーズ・音数過多 (余白の破壊防止)', en: 'dense notes, crowded arrangement, busy arpeggios, wall of sound, cluttered mix' },
   { id: 'lead_switching', ja: '主旋律楽器の途中交代・メロディ音色の急変', en: 'switching lead instruments, sudden melody timbre change, rotating leads' },
   { id: 'heavy_drops', ja: '激しいEDMドロップ・過剰な重低音・ダブステップ', en: 'heavy EDM drops, dubstep wobbles, overwhelming sub-bass, club techno' },
   { id: 'screech_harsh', ja: '耳障りな甲高いノイズ・過度な歪み・シャウト', en: 'ear-piercing screech, harsh clipping, heavy metal distortion, screaming' },

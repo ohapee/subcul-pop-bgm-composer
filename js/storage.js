@@ -11,6 +11,7 @@ export function serializeState(state) {
     motif: state.motif || 'kissaten_cyber',
     melodyInst: state.melodyInst || 'none',
     lockMelodyInst: Boolean(state.lockMelodyInst),
+    sparseNotes: Boolean(state.sparseNotes),
     insts: [...state.insts],
     sfx: [...state.sfx],
     density: state.density || 'occasional',
