@@ -9,6 +9,8 @@ export function serializeState(state) {
   return {
     trackTitle: state.trackTitle || '',
     motif: state.motif || 'kissaten_cyber',
+    melodyInst: state.melodyInst || 'none',
+    lockMelodyInst: Boolean(state.lockMelodyInst),
     insts: [...state.insts],
     sfx: [...state.sfx],
     density: state.density || 'occasional',

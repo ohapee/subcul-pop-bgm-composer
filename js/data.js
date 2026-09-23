@@ -14,7 +14,21 @@ export const MOTIFS = [
   { id: 'rainy_study', ja: '雨の日のコーディング (没入・ホワイトノイズ)', en: 'a deeply focused coding beat with rainy window ambiance and gentle lo-fi piano chords', enShort: 'deep-focus rainy study beat' }
 ];
 
-// 楽器・音色（お洒落で耳馴染みの良い編成）
+// メロディライン担当楽器（主旋律）
+export const MELODY_INSTRUMENTS = [
+  { id: 'none', ja: '指定なし (アンサンブルにお任せ)', en: 'balanced ensemble with no fixed solo lead', enShort: 'ensemble balanced' },
+  { id: 'rhodes_chill', ja: 'ローズピアノ (温かいエレピ主旋律)', en: 'warm velvety Rhodes electric piano lead', enShort: 'Rhodes piano lead' },
+  { id: 'square_lead', ja: '8bit矩形波シンセ (ピコピコリード)', en: 'vintage 8-bit square-wave chiptune synth lead', enShort: '8-bit square lead' },
+  { id: 'synth_pluck', ja: 'ベル系プラックシンセ (透明感)', en: 'sparkling bell-like synth pluck melody', enShort: 'synth pluck lead' },
+  { id: 'guitar_clean', ja: 'クリーンギター / アコギ (軽快でお洒落)', en: 'crisp clean electric or acoustic guitar melodic lead', enShort: 'clean guitar lead' },
+  { id: 'vibraphone', ja: 'ヴィブラフォン / 鉄琴 (カフェの温もり)', en: 'mellow jazz vibraphone and glockenspiel melodic lead', enShort: 'vibraphone lead' },
+  { id: 'tape_flute', ja: 'メロトロン風フルート / 口笛 (哀愁・エモ)', en: 'nostalgic vintage tape-flute or whistled lead melody', enShort: 'tape flute lead' },
+  { id: 'voice_chops', ja: 'ウィスパー・ボイスチョップ (楽器化声)', en: 'airy whisper vocal chop melodic lead', enShort: 'vocal chop lead' },
+  { id: 'sax_chill', ja: 'メロウ・サックス (シティポップ/都会の夜)', en: 'smooth mellow chill saxophone melodic lead', enShort: 'chill sax lead' },
+  { id: 'toy_piano', ja: 'トイピアノ / オルゴール (ピクセルノスタルジー)', en: 'cute toy piano and music box melody lead', enShort: 'toy piano lead' }
+];
+
+// 伴奏・バッキング楽器（お洒落で耳馴染みの良い編成）
 export const INSTRUMENTS = [
   { id: 'rhodes_chill', ja: 'ローズピアノ (Rhodes / 温かいエレピ)', en: 'warm, velvety Rhodes electric piano chords with gentle vibrato' },
   { id: 'square_arp', ja: '8bitアルペジオ (レトロゲームのピコピコ)', en: 'playful 8-bit chiptune arpeggios tucked neatly in the mix' },
@@ -27,16 +41,26 @@ export const INSTRUMENTS = [
   { id: 'voice_chops', ja: 'ウィスパー・ボイスチョップ (楽器化声)', en: 'airy, wordless whisper vocal chops acting as an instrument' }
 ];
 
-// サブカル効果音・ギークアクセント
+// サブカル効果音・ゲームアクセント
 export const SFX = [
-  { id: 'tape_click', ja: 'カセットテープのカチッ音', en: 'a tactile mechanical cassette deck play/stop click' },
-  { id: 'vinyl_crackle', ja: 'レコードの針音・チリチリ', en: 'cozy analog vinyl hiss and needle crackle' },
-  { id: 'typewriter', ja: 'タイプライター / キーボード打鍵音', en: 'satisfying vintage typewriter keys or mechanical keyboard clacks' },
-  { id: 'camera_click', ja: 'オールドデジカメのシャッター音', en: 'a quick retro digital camera shutter sound' },
-  { id: 'coin_pickup', ja: 'ゲームボーイ風コイン獲得音', en: 'a tiny 8-bit coin collect accent' },
-  { id: 'soda_fizz', ja: 'メロンソーダの炭酸シュワシュワ', en: 'effervescent soda fizz and ice clinks in a glass' },
-  { id: 'cafe_rain', ja: 'カフェの窓の雨音', en: 'soft raindrops tapping on a cafe windowpane' },
-  { id: 'record_scratch', ja: 'さりげないレコードスクラッチ', en: 'a subtle, tasteful lo-fi record baby scratch' }
+  // 🎮 レトロゲーム効果音
+  { id: 'sfx_pikopiko', ja: '8bitピコピコ音 (電子ビープ・小気味よい)', en: 'playful 8-bit chiptune blips and bleeps', category: 'game' },
+  { id: 'sfx_pikoon', ja: 'ピコーン！ (ひらめき・決定・カーソル音)', en: 'bright 8-bit "pi-koon" chime and confirm sound accents', category: 'game' },
+  { id: 'sfx_puyon', ja: 'プユゥ〜ん (バウンス・ピッチベンド・コミカル)', en: 'comic springy "puyon" boing and pitch-bend drop accents', category: 'game' },
+  { id: 'coin_pickup', ja: 'コイン獲得音 (ゲームボーイ風チャリン)', en: 'a tiny 8-bit coin collect accent', category: 'game' },
+  { id: 'sfx_powerup', ja: 'パワーアップ音 (上昇アルペジオ)', en: 'short ascending 8-bit power-up arpeggio flourish', category: 'game' },
+  { id: 'sfx_jump', ja: 'ジャンプ音 (ピョンと弾む音)', en: 'bouncy 8-bit retro jump swoosh', category: 'game' },
+  { id: 'sfx_pause', ja: 'ポーズ音 (ゲーム一時停止・ピポッ)', en: 'classic retro game pause chime', category: 'game' },
+  { id: 'sfx_1up', ja: '1UP音 (ファンファーレ・歓喜)', en: 'cheerful 8-bit 1UP celebration jingle', category: 'game' },
+
+  // ☕ 純喫茶・サブカル環境音
+  { id: 'tape_click', ja: 'カセットテープのカチッ音', en: 'a tactile mechanical cassette deck play/stop click', category: 'subcul' },
+  { id: 'vinyl_crackle', ja: 'レコードの針音・チリチリ', en: 'cozy analog vinyl hiss and needle crackle', category: 'subcul' },
+  { id: 'typewriter', ja: 'タイプライター / キーボード打鍵音', en: 'satisfying vintage typewriter keys or mechanical keyboard clacks', category: 'subcul' },
+  { id: 'camera_click', ja: 'オールドデジカメのシャッター音', en: 'a quick retro digital camera shutter sound', category: 'subcul' },
+  { id: 'soda_fizz', ja: 'メロンソーダの炭酸シュワシュワ', en: 'effervescent soda fizz and ice clinks in a glass', category: 'subcul' },
+  { id: 'cafe_rain', ja: 'カフェの窓の雨音', en: 'soft raindrops tapping on a cafe windowpane', category: 'subcul' },
+  { id: 'record_scratch', ja: 'さりげないレコードスクラッチ', en: 'a subtle, tasteful lo-fi record baby scratch', category: 'subcul' }
 ];
 
 // 和声・コード進行（お洒落で知的、作業がはかどるコード）
@@ -99,6 +123,7 @@ export const FOCUS_MODES = {
 // ネガティブプロンプト（集中を妨げる要素の除外）
 export const NEGATIVE_OPTIONS = [
   { id: 'vocals_distract', ja: '人の歌声・騒がしいボーカル・ラップ (集中妨害防止)', en: 'vocals, singing, rapping, aggressive speech, distractions' },
+  { id: 'lead_switching', ja: '主旋律楽器の途中交代・メロディ音色の急変', en: 'switching lead instruments, sudden melody timbre change, rotating leads' },
   { id: 'heavy_drops', ja: '激しいEDMドロップ・過剰な重低音・ダブステップ', en: 'heavy EDM drops, dubstep wobbles, overwhelming sub-bass, club techno' },
   { id: 'screech_harsh', ja: '耳障りな甲高いノイズ・過度な歪み・シャウト', en: 'ear-piercing screech, harsh clipping, heavy metal distortion, screaming' },
   { id: 'chaotic_tempo', ja: '不規則なテンポ変更・激しい転調・緊迫感', en: 'chaotic tempo changes, aggressive key shifts, horror, tension' }

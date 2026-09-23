@@ -225,6 +225,287 @@ class SubculAudioEngine {
     noise.stop(time + 0.03);
   }
 
+  // 🎮 ゲーム効果音: 8bitピコピコ音
+  playPikoBlip(time) {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(1650, time);
+    gain.gain.setValueAtTime(0.12, time);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.045);
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start(time);
+    osc.stop(time + 0.045);
+  }
+
+  // 🎮 ゲーム効果音: ピコーン！ (決定・ひらめき音)
+  playPikoonChime(time) {
+    if (!this.ctx) return;
+    // 1音目: E6 (1318.5Hz)
+    const osc1 = this.ctx.createOscillator();
+    const gain1 = this.ctx.createGain();
+    osc1.type = 'square';
+    osc1.frequency.setValueAtTime(1318.5, time);
+    gain1.gain.setValueAtTime(0.12, time);
+    gain1.gain.exponentialRampToValueAtTime(0.001, time + 0.07);
+    osc1.connect(gain1);
+    gain1.connect(this.masterGain);
+    osc1.start(time);
+    osc1.stop(time + 0.07);
+
+    // 2音目: B6 (1975.5Hz)
+    const osc2 = this.ctx.createOscillator();
+    const gain2 = this.ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(1975.5, time + 0.05);
+    gain2.gain.setValueAtTime(0.001, time);
+    gain2.gain.setValueAtTime(0.18, time + 0.05);
+    gain2.gain.exponentialRampToValueAtTime(0.001, time + 0.28);
+    osc2.connect(gain2);
+    gain2.connect(this.masterGain);
+    osc2.start(time + 0.05);
+    osc2.stop(time + 0.28);
+  }
+
+  // 🎮 ゲーム効果音: プユゥ〜ん (バウンス・ピッチベンド急降下)
+  playPuyonBounce(time) {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    // 最初700Hzから一瞬880Hzへ跳ねてから160Hzへ滑らかに急降下
+    osc.frequency.setValueAtTime(700, time);
+    osc.frequency.linearRampToValueAtTime(880, time + 0.03);
+    osc.frequency.exponentialRampToValueAtTime(160, time + 0.26);
+
+    gain.gain.setValueAtTime(0.25, time);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.26);
+
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start(time);
+    osc.stop(time + 0.26);
+  }
+
+  // 🎮 ゲーム効果音: コイン獲得音 (チャリン)
+  playCoin(time) {
+    if (!this.ctx) return;
+    const osc1 = this.ctx.createOscillator();
+    const gain1 = this.ctx.createGain();
+    osc1.type = 'square';
+    osc1.frequency.setValueAtTime(987.77, time); // B5
+    gain1.gain.setValueAtTime(0.12, time);
+    gain1.gain.exponentialRampToValueAtTime(0.001, time + 0.06);
+    osc1.connect(gain1);
+    gain1.connect(this.masterGain);
+    osc1.start(time);
+    osc1.stop(time + 0.06);
+
+    const osc2 = this.ctx.createOscillator();
+    const gain2 = this.ctx.createGain();
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(1318.51, time + 0.06); // E6
+    gain2.gain.setValueAtTime(0.001, time);
+    gain2.gain.setValueAtTime(0.15, time + 0.06);
+    gain2.gain.exponentialRampToValueAtTime(0.001, time + 0.3);
+    osc2.connect(gain2);
+    gain2.connect(this.masterGain);
+    osc2.start(time + 0.06);
+    osc2.stop(time + 0.3);
+  }
+
+  // 🎮 ゲーム効果音: パワーアップ音
+  playPowerup(time) {
+    if (!this.ctx) return;
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const noteTime = time + idx * 0.04;
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, noteTime);
+      gain.gain.setValueAtTime(0.1, noteTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.07);
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      osc.start(noteTime);
+      osc.stop(noteTime + 0.07);
+    });
+  }
+
+  // 🎮 ゲーム効果音: ジャンプ音
+  playJump(time) {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(160, time);
+    osc.frequency.exponentialRampToValueAtTime(640, time + 0.12);
+    gain.gain.setValueAtTime(0.14, time);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.12);
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start(time);
+    osc.stop(time + 0.12);
+  }
+
+  // 🎮 ゲーム効果音: ポーズ音
+  playPause(time) {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(660, time);
+    osc.frequency.setValueAtTime(440, time + 0.05);
+    gain.gain.setValueAtTime(0.18, time);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.14);
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start(time);
+    osc.stop(time + 0.14);
+  }
+
+  // 🎮 ゲーム効果音: 1UP音
+  playOneUp(time) {
+    if (!this.ctx) return;
+    const notes = [330, 659, 523, 784, 1046];
+    notes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const noteTime = time + idx * 0.045;
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, noteTime);
+      gain.gain.setValueAtTime(0.14, noteTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.09);
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      osc.start(noteTime);
+      osc.stop(noteTime + 0.09);
+    });
+  }
+
+  // ☕ サブカル環境音: カセットテープクリック
+  playTapeClick(time) {
+    if (!this.ctx || !this.noiseBuffer) return;
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = this.noiseBuffer;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1200, time);
+    filter.Q.setValueAtTime(4.0, time);
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.2, time);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.025);
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.masterGain);
+    noise.start(time);
+    noise.stop(time + 0.025);
+  }
+
+  // 統合SFXディスパッチャー (単体試聴および自動再生に利用)
+  playSfx(type, time = null) {
+    this.initContext();
+    const t = time !== null ? time : this.ctx.currentTime;
+    switch (type) {
+      case 'sfx_pikopiko':
+        this.playPikoBlip(t);
+        break;
+      case 'sfx_pikoon':
+        this.playPikoonChime(t);
+        break;
+      case 'sfx_puyon':
+        this.playPuyonBounce(t);
+        break;
+      case 'coin_pickup':
+        this.playCoin(t);
+        break;
+      case 'sfx_powerup':
+        this.playPowerup(t);
+        break;
+      case 'sfx_jump':
+        this.playJump(t);
+        break;
+      case 'sfx_pause':
+        this.playPause(t);
+        break;
+      case 'sfx_1up':
+        this.playOneUp(t);
+        break;
+      case 'tape_click':
+      case 'typewriter':
+      case 'camera_click':
+        this.playTapeClick(t);
+        break;
+      default:
+        this.playPikoBlip(t);
+        break;
+    }
+  }
+
+  // メロディリード演奏 (選択された楽器に応じて音色を切り替え)
+  playMelodyLead(freq, time, duration, melodyInstId) {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    switch (melodyInstId) {
+      case 'rhodes_chill':
+        // ローズ調サイン波
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.001, time);
+        gain.gain.linearRampToValueAtTime(0.07, time + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration * 1.4);
+        break;
+      case 'synth_pluck':
+        // プラック系三角波
+        osc.type = 'triangle';
+        gain.gain.setValueAtTime(0.065, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration * 0.7);
+        break;
+      case 'vibraphone':
+        // ヴィブラフォン
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.08, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration * 1.6);
+        break;
+      case 'toy_piano':
+        // トイピアノ
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.09, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration * 0.5);
+        break;
+      case 'tape_flute':
+        // フルート調
+        osc.type = 'triangle';
+        gain.gain.setValueAtTime(0.001, time);
+        gain.gain.linearRampToValueAtTime(0.055, time + 0.025);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration * 1.2);
+        break;
+      case 'guitar_clean':
+        // クリーンギター風（三角波＋短い減衰）
+        osc.type = 'triangle';
+        gain.gain.setValueAtTime(0.07, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration * 0.9);
+        break;
+      case 'square_lead':
+      default:
+        // 8bit矩形波
+        osc.type = 'square';
+        gain.gain.setValueAtTime(0.045, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+        break;
+    }
+
+    osc.frequency.setValueAtTime(freq, time);
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start(time);
+    osc.stop(time + duration * 2.0);
+  }
+
   // ループ演奏
   start(getStateFn, onStepCallback) {
     this.initContext();
@@ -271,11 +552,22 @@ class SubculAudioEngine {
         this.playWalkingBass(bassNote, now, stepDuration * 1.6);
       }
 
-      // 4. 8bitピコピコアルペジオ (ゲーム音とチルの融合！)
+      // 4. メロディ / アルペジオ (選択されたメロディ楽器に応じて発音)
       const arpNotes = scaleData.arpFreqs;
       const arpPattern = [0, 2, 4, 7, 5, 3, 2, 1, 0, 4, 6, 7, 5, 4, 2, 1];
       const freq = arpNotes[arpPattern[step % 16] % arpNotes.length];
-      this.playChiptuneArp(freq, now, stepDuration * 0.85);
+      this.playMelodyLead(freq, now, stepDuration * 0.85, state.melodyInst);
+
+      // 5. ゲーム効果音・環境音のアクセント自動挿入
+      if (state.density !== 'none' && state.sfx && state.sfx.size > 0) {
+        const sfxArr = [...state.sfx];
+        // frequentなら8ステップごと、occasionalなら16ステップの終わり
+        const triggerStep = state.density === 'frequent' ? (step === 7 || step === 15) : (step === 14);
+        if (triggerStep && Math.random() < (state.density === 'frequent' ? 0.75 : 0.45)) {
+          const sfxChoice = sfxArr[Math.floor(Math.random() * sfxArr.length)];
+          this.playSfx(sfxChoice, now);
+        }
+      }
 
       if (onStepCallback) {
         onStepCallback(step % 16);

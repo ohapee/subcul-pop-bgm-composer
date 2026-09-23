@@ -5,6 +5,7 @@
 import {
   MOTIFS,
   INSTRUMENTS,
+  MELODY_INSTRUMENTS,
   SFX,
   KEYS,
   DENSITY,
@@ -32,11 +33,13 @@ import {
 const state = {
   trackTitle: '純喫茶メロンソーダ',
   motif: 'kissaten_cyber',
-  insts: new Set(['rhodes_chill', 'square_arp', 'funky_bass', 'lofi_drums']),
-  sfx: new Set(['tape_click', 'vinyl_crackle']),
+  melodyInst: 'rhodes_chill',
+  lockMelodyInst: true,
+  insts: new Set(['square_arp', 'funky_bass', 'lofi_drums']),
+  sfx: new Set(['sfx_pikopiko', 'tape_click', 'vinyl_crackle']),
   density: 'occasional',
   focusMode: 'flow',
-  negatives: new Set(['vocals_distract', 'heavy_drops']),
+  negatives: new Set(['vocals_distract', 'lead_switching', 'heavy_drops']),
   key: 'marusa_eb',
   tempo: 96,
   duration: '60',
@@ -54,6 +57,7 @@ function flash(msg) {
 }
 
 function buildMultiChips(container, items, stateSet, onChange) {
+  if (!container) return;
   container.innerHTML = '';
   items.forEach(item => {
     const b = document.createElement('button');
@@ -70,6 +74,54 @@ function buildMultiChips(container, items, stateSet, onChange) {
       onChange();
     });
     container.appendChild(b);
+  });
+}
+
+function buildSfxChips(container, items, stateSet, onChange) {
+  if (!container) return;
+  container.innerHTML = '';
+
+  const groups = [
+    { title: '🎮 レトロゲーム効果音 (ピコピコ・ピコーン・プユゥ〜ん等)', filter: (i) => i.category === 'game' },
+    { title: '☕ 純喫茶・サブカル環境音 (カセット・レコード等)', filter: (i) => i.category !== 'game' }
+  ];
+
+  groups.forEach(g => {
+    const groupItems = items.filter(g.filter);
+    if (groupItems.length === 0) return;
+
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'sfx-group';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'sfx-group-title';
+    titleEl.textContent = g.title;
+    groupDiv.appendChild(titleEl);
+
+    const chipRow = document.createElement('div');
+    chipRow.className = 'chip-row';
+
+    groupItems.forEach(item => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip' + (stateSet.has(item.id) ? ' on' : '');
+      b.textContent = item.ja;
+      b.title = 'クリックで選択 & 音色試聴';
+      b.addEventListener('click', () => {
+        if (stateSet.has(item.id)) {
+          stateSet.delete(item.id);
+        } else {
+          stateSet.add(item.id);
+        }
+        b.classList.toggle('on');
+        subculAudio.playSfx(item.id);
+        onChange();
+      });
+      chipRow.appendChild(b);
+    });
+
+    groupDiv.appendChild(chipRow);
+    container.appendChild(groupDiv);
   });
 }
 
@@ -203,6 +255,8 @@ function applyState(obj) {
   if (!obj) return;
   state.trackTitle = obj.trackTitle || '';
   state.motif = obj.motif || 'kissaten_cyber';
+  state.melodyInst = obj.melodyInst !== undefined ? obj.melodyInst : 'rhodes_chill';
+  state.lockMelodyInst = obj.lockMelodyInst !== undefined ? Boolean(obj.lockMelodyInst) : true;
   state.insts = new Set(obj.insts || []);
   state.sfx = new Set(obj.sfx || []);
   state.density = obj.density || 'occasional';
@@ -224,8 +278,16 @@ function applyState(obj) {
     maybeRegenerate();
   });
 
+  buildSingleChips(document.getElementById('melodyInstChips'), MELODY_INSTRUMENTS, state.melodyInst, (id) => {
+    state.melodyInst = id;
+    maybeRegenerate();
+  });
+
+  const lockMelodyCheck = document.getElementById('lockMelodyInstCheck');
+  if (lockMelodyCheck) lockMelodyCheck.checked = state.lockMelodyInst;
+
   buildMultiChips(document.getElementById('instChips'), INSTRUMENTS, state.insts, maybeRegenerate);
-  buildMultiChips(document.getElementById('sfxChips'), SFX, state.sfx, maybeRegenerate);
+  buildSfxChips(document.getElementById('sfxChips'), SFX, state.sfx, maybeRegenerate);
   buildMultiChips(document.getElementById('negativeChips'), NEGATIVE_OPTIONS, state.negatives, maybeRegenerate);
 
   // 尺チップ
@@ -318,6 +380,15 @@ function init() {
     maybeRegenerate();
   });
 
+  // メロディ楽器の固定オプション
+  const lockMelodyCheck = document.getElementById('lockMelodyInstCheck');
+  if (lockMelodyCheck) {
+    lockMelodyCheck.addEventListener('change', (e) => {
+      state.lockMelodyInst = e.target.checked;
+      maybeRegenerate();
+    });
+  }
+
   // 言語切替
   document.querySelectorAll('#langToggle button').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -344,7 +415,11 @@ function init() {
     updatePresetPlaceholder();
 
     state.motif = MOTIFS[Math.floor(Math.random() * MOTIFS.length)].id;
-    state.insts = new Set(sample(INSTRUMENTS, 3, 5));
+    // メロディ楽器もランダムに選択
+    state.melodyInst = MELODY_INSTRUMENTS[Math.floor(Math.random() * MELODY_INSTRUMENTS.length)].id;
+    state.lockMelodyInst = Math.random() < 0.85; // 85%の確率で固定ON
+    state.insts = new Set(sample(INSTRUMENTS, 2, 4));
+    // ゲーム効果音と環境音からランダムに選出
     state.sfx = new Set(sample(SFX, 1, 3));
     state.tempo = 84 + Math.floor(Math.random() * 26); // 84〜110 BPM
     const keyKeys = Object.keys(KEYS);
@@ -360,11 +435,13 @@ function init() {
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.trackTitle = '純喫茶メロンソーダ';
     state.motif = 'kissaten_cyber';
-    state.insts = new Set(['rhodes_chill', 'square_arp', 'funky_bass', 'lofi_drums']);
-    state.sfx = new Set(['tape_click', 'vinyl_crackle']);
+    state.melodyInst = 'rhodes_chill';
+    state.lockMelodyInst = true;
+    state.insts = new Set(['square_arp', 'funky_bass', 'lofi_drums']);
+    state.sfx = new Set(['sfx_pikopiko', 'tape_click', 'vinyl_crackle']);
     state.density = 'occasional';
     state.focusMode = 'flow';
-    state.negatives = new Set(['vocals_distract', 'heavy_drops']);
+    state.negatives = new Set(['vocals_distract', 'lead_switching', 'heavy_drops']);
     state.key = 'marusa_eb';
     state.tempo = 96;
     state.duration = '60';

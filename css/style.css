@@ -247,6 +247,11 @@ h2 .badge {
   color: #ffffff;
 }
 
+#melodyInstChips .chip.on {
+  background: var(--pink-cherry);
+  color: #ffffff;
+}
+
 #instChips .chip.on {
   background: var(--blue-cyber);
   color: #0f172a;
@@ -265,6 +270,71 @@ h2 .badge {
 #durationChips .chip.on {
   background: var(--purple-cassette);
   color: #ffffff;
+}
+
+/* 効果音グループ */
+.sfx-group {
+  margin-bottom: 12px;
+}
+
+.sfx-group:last-child {
+  margin-bottom: 0;
+}
+
+.sfx-group-title {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--text-sub);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+}
+
+/* チェックボックスカード（メロディ固定等） */
+.checkbox-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--bg-sub);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.12s ease;
+  box-shadow: var(--shadow-small);
+}
+
+.checkbox-card:hover {
+  background: #dcf3e4;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--border-color);
+}
+
+.checkbox-card input[type="checkbox"] {
+  width: 19px;
+  height: 19px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--pink-cherry);
+  flex-shrink: 0;
+}
+
+.checkbox-card .checkbox-label-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--text-sub);
+  margin: 4px 0 0;
+  line-height: 1.45;
+  font-weight: 500;
 }
 
 /* ==========================================================================

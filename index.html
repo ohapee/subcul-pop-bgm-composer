@@ -64,14 +64,33 @@
       <section class="panel">
         <h2>2. サウンド編成・質感 <span class="badge">SOUNDS</span></h2>
 
+        <!-- 1) メロディライン担当楽器 -->
         <div class="field">
-          <label class="small">楽器・音色（複数選択可）</label>
+          <label class="small">メロディライン担当楽器（主旋律・1つ選択）</label>
+          <div id="melodyInstChips" class="chip-row"></div>
+        </div>
+
+        <!-- 2) メロディラインの楽器を変えないオプション -->
+        <div class="field">
+          <label class="checkbox-card" for="lockMelodyInstCheck">
+            <input type="checkbox" id="lockMelodyInstCheck" checked>
+            <div>
+              <div class="checkbox-label-text">🔒 メロディラインの楽器を変えない（曲全体で一貫した主旋律をキープ）</div>
+              <p class="field-hint">曲の途中で主旋律の楽器がコロコロ変わったり、ボーカルにすり替わるのを防ぐ強力なプロンプト制約を注入します。</p>
+            </div>
+          </label>
+        </div>
+
+        <!-- 伴奏・バッキング楽器 -->
+        <div class="field">
+          <label class="small">伴奏・バッキング楽器（複数選択可）</label>
           <div id="instChips" class="chip-row"></div>
         </div>
 
+        <!-- 3) 効果音（ゲーム効果音 & サブカル環境音） -->
         <div class="field">
-          <label class="small">サブカル環境音・ノイズ（複数選択可）</label>
-          <div id="sfxChips" class="chip-row"></div>
+          <label class="small">ゲーム効果音・サブカル環境音（複数選択可 / クリックで音色試聴🔊）</label>
+          <div id="sfxChips"></div>
         </div>
 
         <div class="field">
