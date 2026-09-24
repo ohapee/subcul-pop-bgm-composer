@@ -60,7 +60,10 @@ export const SFX = [
   { id: 'camera_click', ja: 'オールドデジカメのシャッター音', en: 'a quick retro digital camera shutter sound', category: 'subcul' },
   { id: 'soda_fizz', ja: 'メロンソーダの炭酸シュワシュワ', en: 'effervescent soda fizz and ice clinks in a glass', category: 'subcul' },
   { id: 'cafe_rain', ja: 'カフェの窓の雨音', en: 'soft raindrops tapping on a cafe windowpane', category: 'subcul' },
-  { id: 'record_scratch', ja: 'さりげないレコードスクラッチ', en: 'a subtle, tasteful lo-fi record baby scratch', category: 'subcul' }
+  { id: 'record_scratch', ja: 'さりげないレコードスクラッチ', en: 'a subtle, tasteful lo-fi record baby scratch', category: 'subcul' },
+  { id: 'angel_chime', ja: 'エンジェルチャイム (天使界隈・透明な余韻)', en: 'ethereal glassy angel chimes with crystalline shimmer', category: 'subcul' },
+  { id: 'magic_star', ja: 'マジックスター (ゆめかわ・星の瞬き)', en: 'sparkling fairy-tale magic star sparkle sound', category: 'subcul' },
+  { id: 'heartbeat_sub', ja: '病みハートビート (地雷系・低音の脈動)', en: 'a muffled lo-fi emotional heartbeat thud', category: 'subcul' }
 ];
 
 // 和声・コード進行（お洒落で知的、作業がはかどるコード）
@@ -153,6 +156,48 @@ export const KAWAII_LEVELS = [
   { id: 'full', ja: '全開 (MAX)', en: 'full-throttle' }
 ];
 
+// サブカルKawaii派生スタイル（地雷系・天使界隈・ゆめかわいい・量産型）
+export const SUBCUL_STYLES = [
+  {
+    id: 'none',
+    ja: '指定なし (標準)',
+    en: 'none',
+    desc: '標準のサブカルポップ'
+  },
+  {
+    id: 'jirai',
+    ja: '🖤 地雷系 (重厚ダークエレクトロ・黒×ピンク・甘辛)',
+    en: 'Jirai-kei (Dark Electro Pop, Heavy Sub-Bass, Emotional Melodrama)',
+    tag: '[Substyle: Jirai-kei, Dark Electro Pop, Heavy Sub-Bass, Emotional Melodramatic Tone]',
+    descJa: '【地雷系スタイル】重みのあるベースラインとエレクトロビート、黒とピンクのコントラスト、メンヘラ的でエモーショナルなダークエレクトロの甘辛アクセント。',
+    descEn: 'Jirai-kei subculture aesthetic: dark, edgy synth-pop textures, heavy sub-bass warmth, and emotional sweet-and-sour melodramatic hooks.'
+  },
+  {
+    id: 'tenshi',
+    ja: '👼 天使界隈 (水色×白・サイバー透明感・儚い浮遊感)',
+    en: 'Tenshi-kaiwai (Pale Cyan Cyber Ambient, Ethereal Airy Chimes, Angelic Float)',
+    tag: '[Substyle: Tenshi-kaiwai, Pale Cyan Aesthetic, Ethereal Cyber Ambient, Angelic Chimes]',
+    descJa: '【天使界隈スタイル】水色と白を基調とした澄んだ透明感、サイバーで儚い浮遊感、羽毛やエンジェルチャイムを思わせる無機質でドリーミーなアンビエントチル。',
+    descEn: 'Tenshi-kaiwai (Angel Realm) subculture aesthetic: luminous pale-cyan cyber atmosphere, weightless ethereal bell chimes, crystalline airiness, and delicate ambient floating serenity.'
+  },
+  {
+    id: 'yumekawa',
+    ja: '🦄 ゆめかわいい (パステル・メルヘン・ドリーミー)',
+    en: 'Yume-kawaii (Dreamy Fairy Pastel, Soft Music Box, Fantasy Chill)',
+    tag: '[Substyle: Yume-kawaii, Dreamy Fairy Pastel, Soft Music Box, Fantasy Chill]',
+    descJa: '【ゆめかわいいスタイル】パステルカラーの夢の世界、メルヘンでドリーミーなオルゴールやトイサウンド、ファンタジックで甘いメルティポップ。',
+    descEn: 'Yume-kawaii subculture aesthetic: soft pastel-pink and lavender dreamscape, enchanted fairy-tale music box arpeggios, and fluffy, sweet bedtime-fantasy wonder.'
+  },
+  {
+    id: 'ryousan',
+    ja: '🎀 量産型 (あざと可愛い・王道キラキラアイドルポップ)',
+    en: 'Ryousan-gata (Sparkling Idol Pop, Ultra-Sweet Chic, Catchy Hooks)',
+    tag: '[Substyle: Ryousan-gata, Sparkling Japanese Idol Pop, Ultra-Sweet Melodic Hooks]',
+    descJa: '【量産型スタイル】あざと可愛いガーリーな魅力、王道アイドル風のきらめくシンセ、キャッチーで弾むような愛されポップ。',
+    descEn: 'Ryousan-gata subculture aesthetic: undeniably cute and bouncy girl-pop sparkle, pristine crystalline synth hooks, and charmingly sweet idol-pop energy.'
+  }
+];
+
 // レトロ・サブカル風の曲名ガチャワード
 export const TITLE_SUGGESTIONS = [
   '純喫茶メロンソーダ',
@@ -174,5 +219,12 @@ export const TITLE_SUGGESTIONS = [
   'パステル電脳カプセル',
   '午前4時のメンヘラチル',
   'おくすりとメロンソーダ',
-  '原宿トイボックス・ステップ'
+  '原宿トイボックス・ステップ',
+  '水色天使のサイバーオアシス',
+  '地雷系少女の深夜徘徊',
+  'ゆめかわパステル・プラネット',
+  'トーキョー量産型シンドローム',
+  '天使界隈の電脳祈り',
+  '午前3時の地雷ビート',
+  '病み甘コットンキャンディ'
 ];

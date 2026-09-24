@@ -262,6 +262,11 @@ h2 .badge {
   color: #ffffff;
 }
 
+#subculStyleChips .chip.on {
+  background: #0284c7;
+  color: #ffffff;
+}
+
 #instChips .chip.on {
   background: var(--blue-cyber);
   color: #0f172a;

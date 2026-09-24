@@ -405,6 +405,67 @@ class SubculAudioEngine {
     noise.stop(time + 0.025);
   }
 
+  // 👼 サブカル効果音: エンジェルチャイム (天使界隈・透明な余韻)
+  playAngelChime(time) {
+    if (!this.ctx) return;
+    const freqs = [2093, 2793, 3136, 4186];
+    freqs.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const noteTime = time + idx * 0.035;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, noteTime);
+      gain.gain.setValueAtTime(0.001, noteTime);
+      gain.gain.linearRampToValueAtTime(0.08, noteTime + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, noteTime + 0.55);
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      osc.start(noteTime);
+      osc.stop(noteTime + 0.55);
+    });
+  }
+
+  // 🦄 サブカル効果音: マジックスター (ゆめかわ・星の瞬き)
+  playMagicStar(time) {
+    if (!this.ctx) return;
+    const freqs = [1046, 1318, 1568, 2093, 2637];
+    freqs.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const noteTime = time + idx * 0.03;
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, noteTime);
+      gain.gain.setValueAtTime(0.001, noteTime);
+      gain.gain.linearRampToValueAtTime(0.1, noteTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.22);
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      osc.start(noteTime);
+      osc.stop(noteTime + 0.22);
+    });
+  }
+
+  // 🖤 サブカル効果音: 病みハートビート (地雷系・低音の脈動)
+  playHeartbeatSub(time) {
+    if (!this.ctx) return;
+    // 2連打（トク…トクン…）
+    [0, 0.12].forEach((offset, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const t = time + offset;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(75, t);
+      osc.frequency.exponentialRampToValueAtTime(38, t + 0.15);
+      gain.gain.setValueAtTime(0.001, t);
+      gain.gain.linearRampToValueAtTime(idx === 0 ? 0.22 : 0.32, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      osc.start(t);
+      osc.stop(t + 0.2);
+    });
+  }
+
   // 統合SFXディスパッチャー (単体試聴および自動再生に利用)
   playSfx(type, time = null) {
     this.initContext();
@@ -439,14 +500,23 @@ class SubculAudioEngine {
       case 'camera_click':
         this.playTapeClick(t);
         break;
+      case 'angel_chime':
+        this.playAngelChime(t);
+        break;
+      case 'magic_star':
+        this.playMagicStar(t);
+        break;
+      case 'heartbeat_sub':
+        this.playHeartbeatSub(t);
+        break;
       default:
         this.playPikoBlip(t);
         break;
     }
   }
 
-  // メロディリード演奏 (選択された楽器・Kawaiiテイストに応じて音色を切り替え)
-  playMelodyLead(freq, time, duration, melodyInstId, hyperKawaii = 'none', yamiKawaii = 'none') {
+  // メロディリード演奏 (選択された楽器・Kawaiiテイスト・サブカルスタイルに応じて音色を切り替え)
+  playMelodyLead(freq, time, duration, melodyInstId, hyperKawaii = 'none', yamiKawaii = 'none', subculStyle = 'none') {
     if (!this.ctx) return;
 
     let targetFreq = freq;
@@ -529,6 +599,48 @@ class SubculAudioEngine {
       sparkleOsc.start(time);
       sparkleOsc.stop(time + duration * 1.8);
     }
+
+    // サブカル派生スタイルの音響レイヤー
+    if (subculStyle === 'tenshi') {
+      // 👼 天使界隈: 2オクターブ上の澄んだクリスタル・ベル浮遊音
+      const angelOsc = this.ctx.createOscillator();
+      const angelGain = this.ctx.createGain();
+      angelOsc.type = 'sine';
+      angelOsc.frequency.setValueAtTime(targetFreq * 4, time);
+      angelGain.gain.setValueAtTime(0.001, time);
+      angelGain.gain.linearRampToValueAtTime(0.025, time + 0.02);
+      angelGain.gain.exponentialRampToValueAtTime(0.0001, time + duration * 2.4);
+      angelOsc.connect(angelGain);
+      angelGain.connect(this.masterGain);
+      angelOsc.start(time);
+      angelOsc.stop(time + duration * 2.4);
+    } else if (subculStyle === 'yumekawa') {
+      // 🦄 ゆめかわいい: 3度上の柔らかいオルゴール・ハーモニー
+      const yumeOsc = this.ctx.createOscillator();
+      const yumeGain = this.ctx.createGain();
+      yumeOsc.type = 'triangle';
+      yumeOsc.frequency.setValueAtTime(targetFreq * 1.25, time);
+      yumeGain.gain.setValueAtTime(0.001, time);
+      yumeGain.gain.linearRampToValueAtTime(0.03, time + 0.01);
+      yumeGain.gain.exponentialRampToValueAtTime(0.001, time + duration * 1.2);
+      yumeOsc.connect(yumeGain);
+      yumeGain.connect(this.masterGain);
+      yumeOsc.start(time);
+      yumeOsc.stop(time + duration * 1.2);
+    } else if (subculStyle === 'jirai') {
+      // 🖤 地雷系: 1オクターブ下のサブベース・ダークトーン
+      const jiraiOsc = this.ctx.createOscillator();
+      const jiraiGain = this.ctx.createGain();
+      jiraiOsc.type = 'sine';
+      jiraiOsc.frequency.setValueAtTime(targetFreq * 0.5, time);
+      jiraiGain.gain.setValueAtTime(0.001, time);
+      jiraiGain.gain.linearRampToValueAtTime(0.05, time + 0.02);
+      jiraiGain.gain.exponentialRampToValueAtTime(0.001, time + duration * 1.5);
+      jiraiOsc.connect(jiraiGain);
+      jiraiGain.connect(this.masterGain);
+      jiraiOsc.start(time);
+      jiraiOsc.stop(time + duration * 1.5);
+    }
   }
 
   // ループ演奏
@@ -606,11 +718,11 @@ class SubculAudioEngine {
         // 音数極小: 16ステップ中2回だけ、ポツリ…ポツリ…と優しく音を置く
         if (step === 3 || step === 10) {
           const freq = arpNotes[arpPattern[step] % arpNotes.length];
-          this.playMelodyLead(freq, now, stepDuration * 2.2, state.melodyInst, state.hyperKawaii, state.yamiKawaii);
+          this.playMelodyLead(freq, now, stepDuration * 2.2, state.melodyInst, state.hyperKawaii, state.yamiKawaii, state.subculStyle);
         }
       } else {
         const freq = arpNotes[arpPattern[step % 16] % arpNotes.length];
-        this.playMelodyLead(freq, now, stepDuration * 0.85, state.melodyInst, state.hyperKawaii, state.yamiKawaii);
+        this.playMelodyLead(freq, now, stepDuration * 0.85, state.melodyInst, state.hyperKawaii, state.yamiKawaii, state.subculStyle);
       }
 
       // 5. ゲーム効果音・環境音のアクセント自動挿入

@@ -7,6 +7,7 @@ import {
   INSTRUMENTS,
   MELODY_INSTRUMENTS,
   KAWAII_LEVELS,
+  SUBCUL_STYLES,
   SFX,
   KEYS,
   DENSITY,
@@ -39,6 +40,7 @@ const state = {
   sparseNotes: false,
   hyperKawaii: 'none',
   yamiKawaii: 'none',
+  subculStyle: 'none',
   insts: new Set(['square_arp', 'funky_bass', 'lofi_drums']),
   sfx: new Set(['sfx_pikopiko', 'tape_click', 'vinyl_crackle']),
   density: 'occasional',
@@ -87,7 +89,7 @@ function buildSfxChips(container, items, stateSet, onChange) {
 
   const groups = [
     { title: '🎮 レトロゲーム効果音 (ピコピコ・ピコーン・プユゥ〜ん等)', filter: (i) => i.category === 'game' },
-    { title: '☕ 純喫茶・サブカル環境音 (カセット・レコード等)', filter: (i) => i.category !== 'game' }
+    { title: '☕ 純喫茶・サブカル環境音＆アクセント (カセット・チャイム・ハートビート等)', filter: (i) => i.category !== 'game' }
   ];
 
   groups.forEach(g => {
@@ -264,6 +266,7 @@ function applyState(obj) {
   state.sparseNotes = obj.sparseNotes !== undefined ? Boolean(obj.sparseNotes) : false;
   state.hyperKawaii = obj.hyperKawaii || 'none';
   state.yamiKawaii = obj.yamiKawaii || 'none';
+  state.subculStyle = obj.subculStyle || 'none';
   state.insts = new Set(obj.insts || []);
   state.sfx = new Set(obj.sfx || []);
   state.density = obj.density || 'occasional';
@@ -303,6 +306,11 @@ function applyState(obj) {
 
   buildSingleChips(document.getElementById('yamiKawaiiChips'), KAWAII_LEVELS, state.yamiKawaii, (id) => {
     state.yamiKawaii = id;
+    maybeRegenerate();
+  });
+
+  buildSingleChips(document.getElementById('subculStyleChips'), SUBCUL_STYLES, state.subculStyle, (id) => {
+    state.subculStyle = id;
     maybeRegenerate();
   });
 
@@ -452,6 +460,9 @@ function init() {
     const kawaiiPool = ['none', 'none', 'light', 'full'];
     state.hyperKawaii = kawaiiPool[Math.floor(Math.random() * kawaiiPool.length)];
     state.yamiKawaii = kawaiiPool[Math.floor(Math.random() * kawaiiPool.length)];
+    // サブカル派生スタイルもランダム選出
+    const stylePool = ['none', 'none', 'none', 'jirai', 'tenshi', 'yumekawa', 'ryousan'];
+    state.subculStyle = stylePool[Math.floor(Math.random() * stylePool.length)];
     state.insts = new Set(sample(INSTRUMENTS, 2, 4));
     // ゲーム効果音と環境音からランダムに選出
     state.sfx = new Set(sample(SFX, 1, 3));
@@ -474,6 +485,7 @@ function init() {
     state.sparseNotes = false;
     state.hyperKawaii = 'none';
     state.yamiKawaii = 'none';
+    state.subculStyle = 'none';
     state.insts = new Set(['square_arp', 'funky_bass', 'lofi_drums']);
     state.sfx = new Set(['sfx_pikopiko', 'tape_click', 'vinyl_crackle']);
     state.density = 'occasional';

@@ -14,6 +14,7 @@ export function serializeState(state) {
     sparseNotes: Boolean(state.sparseNotes),
     hyperKawaii: state.hyperKawaii || 'none',
     yamiKawaii: state.yamiKawaii || 'none',
+    subculStyle: state.subculStyle || 'none',
     insts: [...state.insts],
     sfx: [...state.sfx],
     density: state.density || 'occasional',

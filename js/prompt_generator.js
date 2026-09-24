@@ -1,7 +1,7 @@
 /**
  * サブカルポップBGMプロンプト生成エンジン
  */
-import { MOTIFS, INSTRUMENTS, MELODY_INSTRUMENTS, SFX, KEYS, DENSITY, FOCUS_MODES, DURATIONS, NEGATIVE_OPTIONS } from './data.js';
+import { MOTIFS, INSTRUMENTS, MELODY_INSTRUMENTS, SFX, KEYS, DENSITY, FOCUS_MODES, DURATIONS, NEGATIVE_OPTIONS, SUBCUL_STYLES } from './data.js';
 
 function joinList(arr, lang) {
   if (!arr || arr.length === 0) return '';
@@ -102,6 +102,9 @@ export function buildTimelineData(state) {
   const sfxA = sfx[0] || { ja: 'カセットテープのカチッ音', en: 'a tape deck click' };
   const sfxB = sfx[1] || sfx[0] || { ja: 'レコードの針音', en: 'vinyl crackle' };
 
+  const subculStyleDef = SUBCUL_STYLES.find(s => s.id === state.subculStyle);
+  const hasSubculStyle = subculStyleDef && subculStyleDef.id !== 'none';
+
   if (durationDef.sec === null) {
     return {
       isSeamless: true,
@@ -126,10 +129,10 @@ export function buildTimelineData(state) {
       label: 'メイングルーヴ (作業フロー)',
       ratio: 0.50,
       desc: isSparse
-        ? `余白と静寂を最大限に活かした極小音数グルーヴ。音符を敷き詰めず、一音一音の余韻を味わうミニマル空間。${isLocked ? '主旋律の音色は一貫キープ。' : ''}`
+        ? `余白と静寂を最大限に活かした極小音数グルーヴ。音符を敷き詰めず、一音一音の余韻を味わうミニマル空間。${hasSubculStyle ? subculStyleDef.descJa + ' ' : ''}${isLocked ? '主旋律の音色は一貫キープ。' : ''}`
         : (hasMelody
-            ? `${melodyDef.ja}が心地よい主旋律を奏で、${coreInsts.map(i => i.ja).join('・')}が噛み合うリフレイン。${isLocked ? '主旋律の音色は一貫キープ。' : ''}集中を邪魔しない一定のノリ。`
-            : `${coreInsts.map(i => i.ja).join('・')}が噛み合う心地よいリフレイン。集中を邪魔しない一定のノリ。`)
+            ? `${melodyDef.ja}が心地よい主旋律を奏で、${coreInsts.map(i => i.ja).join('・')}が噛み合うリフレイン。${hasSubculStyle ? subculStyleDef.descJa + ' ' : ''}${isLocked ? '主旋律の音色は一貫キープ。' : ''}集中を邪魔しない一定のノリ。`
+            : `${coreInsts.map(i => i.ja).join('・')}が噛み合う心地よいリフレイン。${hasSubculStyle ? subculStyleDef.descJa + ' ' : ''}集中を邪魔しない一定のノリ。`)
     },
     {
       label: '変化/ブリッジ (気晴らし)',
@@ -161,10 +164,10 @@ export function buildTimelineData(state) {
       label: 'Main Groove (Flow State)',
       ratio: 0.50,
       desc: isSparse
-        ? `Extremely sparse, spacious groove with plenty of negative space and silence between delicate notes.${isLocked ? ' Lead timbre strictly uniform.' : ''} Uncluttered and deeply peaceful.`
+        ? `Extremely sparse, spacious groove with plenty of negative space and silence between delicate notes.${hasSubculStyle ? ' ' + subculStyleDef.descEn : ''}${isLocked ? ' Lead timbre strictly uniform.' : ''} Uncluttered and deeply peaceful.`
         : (hasMelody
-            ? `Steady pocket groove with ${melodyDef.en} leading, supported by ${coreInsts.map(i => i.en).join(', ')}.${isLocked ? ' Timbre kept strictly uniform.' : ''} Unobtrusive and deeply satisfying.`
-            : `Steady pocket groove driven by ${coreInsts.map(i => i.en).join(', ')}. Unobtrusive and deeply satisfying.`)
+            ? `Steady pocket groove with ${melodyDef.en} leading, supported by ${coreInsts.map(i => i.en).join(', ')}.${hasSubculStyle ? ' ' + subculStyleDef.descEn : ''}${isLocked ? ' Timbre kept strictly uniform.' : ''} Unobtrusive and deeply satisfying.`
+            : `Steady pocket groove driven by ${coreInsts.map(i => i.en).join(', ')}.${hasSubculStyle ? ' ' + subculStyleDef.descEn : ''} Unobtrusive and deeply satisfying.`)
     },
     {
       label: 'Subtle Variation',
@@ -222,6 +225,8 @@ export function buildPrompt(state) {
   const isSparse = Boolean(state.sparseNotes);
 
   const kawaii = getKawaiiDescriptor(state.hyperKawaii, state.yamiKawaii, state.lang);
+  const subculStyleDef = SUBCUL_STYLES.find(s => s.id === state.subculStyle);
+  const hasSubculStyle = subculStyleDef && subculStyleDef.id !== 'none';
 
   let prompt = '';
 
@@ -254,19 +259,23 @@ export function buildPrompt(state) {
     // Kawaiiテイスト文
     const kawaiiSentence = kawaii.text ? kawaii.text : '';
 
+    // サブカル派生スタイル文
+    const subculStyleSentence = hasSubculStyle ? subculStyleDef.descJa : '';
+
     if (aiTarget === 'suno_udio') {
       const titleTag = title ? `[Title: ${title}] ` : '';
       const leadTag = hasMelody ? `[Lead: ${melodyDef.enShort || melodyDef.en}] ` : '';
       const lockTag = isLocked ? `[Consistent Lead Throughout] [No Lead Switching] ` : '';
       const sparseTag = isSparse ? `[Ultra-Sparse Arrangement] [Minimalist Note Density] [Maximum Breathing Room] ` : '';
       const kawaiiTag = kawaii.tag || '';
+      const subculStyleTag = (hasSubculStyle && subculStyleDef.tag) ? `${subculStyleDef.tag} ` : '';
 
-      prompt = `${titleTag}[Genre: Neo Shibuya-kei, Chiptune Lofi Study Beat, City Pop Instrumental] [Tempo: ${state.tempo} BPM] [Key: ${key.baseNote}] ${leadTag}${lockTag}${sparseTag}${kawaiiTag}\n` +
+      prompt = `${titleTag}[Genre: Neo Shibuya-kei, Chiptune Lofi Study Beat, City Pop Instrumental] [Tempo: ${state.tempo} BPM] [Key: ${key.baseNote}] ${leadTag}${lockTag}${sparseTag}${kawaiiTag}${subculStyleTag}\n` +
         `${titlePrefix}作業・勉強がはかどるサブカルポップインストBGM。「${motif.ja}」の世界観。` +
-        `編成: ${instText}。${melodySentence}${lockSentence ? ' ' + lockSentence + ' ' : ''}${sparseSentence ? ' ' + sparseSentence + ' ' : ''}${kawaiiSentence ? ' ' + kawaiiSentence + ' ' : ''}${key.ja}を使用${sfxText}。${focus.ja} 歌声なしのインスト限定。`;
+        `編成: ${instText}。${melodySentence}${lockSentence ? ' ' + lockSentence + ' ' : ''}${sparseSentence ? ' ' + sparseSentence + ' ' : ''}${subculStyleSentence ? ' ' + subculStyleSentence + ' ' : ''}${kawaiiSentence ? ' ' + kawaiiSentence + ' ' : ''}${key.ja}を使用${sfxText}。${focus.ja} 歌声なしのインスト限定。`;
     } else {
       prompt = `${titlePrefix}テンポ${state.tempo}BPMのユニークで軽くポップな作業用BGM。「${motif.ja}」の雰囲気。` +
-        `編成は${instText}を中心とし、${melodySentence}${lockSentence ? ' ' + lockSentence + ' ' : ''}${sparseSentence ? ' ' + sparseSentence + ' ' : ''}${kawaiiSentence ? ' ' + kawaiiSentence + ' ' : ''}${key.ja}のお洒落なコード感${sfxText}。` +
+        `編成は${instText}を中心とし、${melodySentence}${lockSentence ? ' ' + lockSentence + ' ' : ''}${sparseSentence ? ' ' + sparseSentence + ' ' : ''}${subculStyleSentence ? ' ' + subculStyleSentence + ' ' : ''}${kawaiiSentence ? ' ' + kawaiiSentence + ' ' : ''}${key.ja}のお洒落なコード感${sfxText}。` +
         `${focus.ja} 歌声なしのインストゥルメンタル。`;
     }
 
@@ -302,6 +311,7 @@ export function buildPrompt(state) {
     }
 
     const kawaiiSentenceEn = kawaii.text ? ` ${kawaii.text}` : '';
+    const subculStyleSentenceEn = hasSubculStyle ? ` ${subculStyleDef.descEn}` : '';
 
     if (aiTarget === 'suno_udio') {
       const titleTag = title ? `[Title: ${title}] ` : '';
@@ -309,12 +319,13 @@ export function buildPrompt(state) {
       const lockTag = isLocked ? `[Consistent Lead Throughout] [No Lead Switching] ` : '';
       const sparseTag = isSparse ? `[Ultra-Sparse Arrangement] [Minimalist Note Density] [Maximum Breathing Room] ` : '';
       const kawaiiTag = kawaii.tag || '';
+      const subculStyleTag = (hasSubculStyle && subculStyleDef.tag) ? `${subculStyleDef.tag} ` : '';
 
-      prompt = `${titleTag}[Genre: Neo Shibuya-kei, 8-bit Chiptune Lofi, Japanese City Pop Instrumental, Study Beat] [Tempo: ${state.tempo} BPM] [Key: ${key.baseNote}] ${leadTag}${lockTag}${sparseTag}${kawaiiTag}\n` +
-        `A stylish, bouncy and lighthearted instrumental study BGM${titleThemed} capturing ${motif.en}. Built on ${instText}.${melodySentenceEn}${lockSentenceEn}${sparseSentenceEn}${kawaiiSentenceEn} Featuring ${key.en}.${sfxText} ${focus.en} Strictly instrumental with no vocals.`;
+      prompt = `${titleTag}[Genre: Neo Shibuya-kei, 8-bit Chiptune Lofi, Japanese City Pop Instrumental, Study Beat] [Tempo: ${state.tempo} BPM] [Key: ${key.baseNote}] ${leadTag}${lockTag}${sparseTag}${kawaiiTag}${subculStyleTag}\n` +
+        `A stylish, bouncy and lighthearted instrumental study BGM${titleThemed} capturing ${motif.en}. Built on ${instText}.${melodySentenceEn}${lockSentenceEn}${sparseSentenceEn}${subculStyleSentenceEn}${kawaiiSentenceEn} Featuring ${key.en}.${sfxText} ${focus.en} Strictly instrumental with no vocals.`;
     } else {
       prompt = `A breezy ${state.tempo} BPM instrumental study track${titleThemed} with ${motif.en}. ` +
-        `Structured around ${instText}.${melodySentenceEn}${lockSentenceEn}${sparseSentenceEn}${kawaiiSentenceEn} Driven by ${key.en}.${sfxText} ` +
+        `Structured around ${instText}.${melodySentenceEn}${lockSentenceEn}${sparseSentenceEn}${subculStyleSentenceEn}${kawaiiSentenceEn} Driven by ${key.en}.${sfxText} ` +
         `${focus.en} Instrumental only, zero distractions.`;
     }
 
@@ -339,6 +350,7 @@ export function buildNegativePrompt(state) {
   const isSparse = Boolean(state.sparseNotes);
   const isHyperFull = state.hyperKawaii === 'full';
   const isYamiFull = state.yamiKawaii === 'full';
+  const subculStyle = state.subculStyle;
 
   if (state.lang === 'ja') {
     let parts = selected.map(n => n.ja);
@@ -353,6 +365,13 @@ export function buildNegativePrompt(state) {
     }
     if (isYamiFull && !isHyperFull) {
       parts.push('過剰に能天気な明るさ・軽薄なポップ感');
+    }
+    if (subculStyle === 'jirai') {
+      parts.push('過剰に能天気なカントリー・素朴すぎるアコースティック');
+    } else if (subculStyle === 'tenshi') {
+      parts.push('泥臭いディストーション・暑苦しい重圧ノイズ');
+    } else if (subculStyle === 'yumekawa') {
+      parts.push('攻撃的な激しい歪み・過度にダークで陰鬱な重圧感');
     }
     if (parts.length === 0) return '';
     return '【作業集中用・除外指示】' + parts.join('、') + 'は一切含めず、集中しやすいインストゥルメンタルにすること。';
@@ -370,6 +389,13 @@ export function buildNegativePrompt(state) {
   }
   if (isYamiFull && !isHyperFull) {
     enList.push('overly cheerful slapstick, cheesy sunshine, corporate upbeat');
+  }
+  if (subculStyle === 'jirai') {
+    enList.push('cheesy acoustic sunshine, rustic country, squeaky-clean optimism');
+  } else if (subculStyle === 'tenshi') {
+    enList.push('muddy distortion, abrasive noisy fuzz, aggressive heavy percussion');
+  } else if (subculStyle === 'yumekawa') {
+    enList.push('aggressive distortion, harsh noise, terrifying gothic heaviness');
   }
   return enList.join(', ');
 }
