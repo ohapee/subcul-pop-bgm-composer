@@ -146,6 +146,13 @@ export const AI_TARGETS = [
   { id: 'plain', label: 'シンプル文章形式', desc: '汎用プロンプト' }
 ];
 
+// Hyper-Kawaii & Yami-Kawaii 制御レベル定義
+export const KAWAII_LEVELS = [
+  { id: 'none', ja: 'なし (標準)', en: 'none' },
+  { id: 'light', ja: 'ほんのり (隠し味)', en: 'subtle essence' },
+  { id: 'full', ja: '全開 (MAX)', en: 'full-throttle' }
+];
+
 // レトロ・サブカル風の曲名ガチャワード
 export const TITLE_SUGGESTIONS = [
   '純喫茶メロンソーダ',
@@ -163,5 +170,9 @@ export const TITLE_SUGGESTIONS = [
   'ワンルーム・エレクトロニカ',
   '週末のコーヒードリップ',
   'サイバーアキバ・ステップ',
-  'トウキョウ・シティ・ポップ'
+  'トウキョウ・シティ・ポップ',
+  'パステル電脳カプセル',
+  '午前4時のメンヘラチル',
+  'おくすりとメロンソーダ',
+  '原宿トイボックス・ステップ'
 ];

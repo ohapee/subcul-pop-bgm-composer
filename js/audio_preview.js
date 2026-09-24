@@ -445,9 +445,18 @@ class SubculAudioEngine {
     }
   }
 
-  // メロディリード演奏 (選択された楽器に応じて音色を切り替え)
-  playMelodyLead(freq, time, duration, melodyInstId) {
+  // メロディリード演奏 (選択された楽器・Kawaiiテイストに応じて音色を切り替え)
+  playMelodyLead(freq, time, duration, melodyInstId, hyperKawaii = 'none', yamiKawaii = 'none') {
     if (!this.ctx) return;
+
+    let targetFreq = freq;
+    // Yami-Kawaii: わずかな不穏・切ないデチューン揺らぎ
+    if (yamiKawaii === 'full') {
+      targetFreq = freq * (1 + (Math.sin(time * 8) * 0.015 - 0.008));
+    } else if (yamiKawaii === 'light') {
+      targetFreq = freq * (1 + (Math.sin(time * 6) * 0.008 - 0.004));
+    }
+
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
@@ -499,11 +508,27 @@ class SubculAudioEngine {
         break;
     }
 
-    osc.frequency.setValueAtTime(freq, time);
+    osc.frequency.setValueAtTime(targetFreq, time);
     osc.connect(gain);
     gain.connect(this.masterGain);
     osc.start(time);
     osc.stop(time + duration * 2.0);
+
+    // Hyper-Kawaii: オクターブ上のキラキラきらめきトーンをレイヤー
+    if (hyperKawaii && hyperKawaii !== 'none') {
+      const sparkleOsc = this.ctx.createOscillator();
+      const sparkleGain = this.ctx.createGain();
+      sparkleOsc.type = 'sine';
+      sparkleOsc.frequency.setValueAtTime(targetFreq * 2, time);
+      const level = hyperKawaii === 'full' ? 0.045 : 0.022;
+      sparkleGain.gain.setValueAtTime(0.001, time);
+      sparkleGain.gain.linearRampToValueAtTime(level, time + 0.01);
+      sparkleGain.gain.exponentialRampToValueAtTime(0.001, time + duration * 1.8);
+      sparkleOsc.connect(sparkleGain);
+      sparkleGain.connect(this.masterGain);
+      sparkleOsc.start(time);
+      sparkleOsc.stop(time + duration * 1.8);
+    }
   }
 
   // ループ演奏
@@ -581,11 +606,11 @@ class SubculAudioEngine {
         // 音数極小: 16ステップ中2回だけ、ポツリ…ポツリ…と優しく音を置く
         if (step === 3 || step === 10) {
           const freq = arpNotes[arpPattern[step] % arpNotes.length];
-          this.playMelodyLead(freq, now, stepDuration * 2.2, state.melodyInst);
+          this.playMelodyLead(freq, now, stepDuration * 2.2, state.melodyInst, state.hyperKawaii, state.yamiKawaii);
         }
       } else {
         const freq = arpNotes[arpPattern[step % 16] % arpNotes.length];
-        this.playMelodyLead(freq, now, stepDuration * 0.85, state.melodyInst);
+        this.playMelodyLead(freq, now, stepDuration * 0.85, state.melodyInst, state.hyperKawaii, state.yamiKawaii);
       }
 
       // 5. ゲーム効果音・環境音のアクセント自動挿入

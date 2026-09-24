@@ -6,6 +6,7 @@ import {
   MOTIFS,
   INSTRUMENTS,
   MELODY_INSTRUMENTS,
+  KAWAII_LEVELS,
   SFX,
   KEYS,
   DENSITY,
@@ -36,6 +37,8 @@ const state = {
   melodyInst: 'rhodes_chill',
   lockMelodyInst: true,
   sparseNotes: false,
+  hyperKawaii: 'none',
+  yamiKawaii: 'none',
   insts: new Set(['square_arp', 'funky_bass', 'lofi_drums']),
   sfx: new Set(['sfx_pikopiko', 'tape_click', 'vinyl_crackle']),
   density: 'occasional',
@@ -259,6 +262,8 @@ function applyState(obj) {
   state.melodyInst = obj.melodyInst !== undefined ? obj.melodyInst : 'rhodes_chill';
   state.lockMelodyInst = obj.lockMelodyInst !== undefined ? Boolean(obj.lockMelodyInst) : true;
   state.sparseNotes = obj.sparseNotes !== undefined ? Boolean(obj.sparseNotes) : false;
+  state.hyperKawaii = obj.hyperKawaii || 'none';
+  state.yamiKawaii = obj.yamiKawaii || 'none';
   state.insts = new Set(obj.insts || []);
   state.sfx = new Set(obj.sfx || []);
   state.density = obj.density || 'occasional';
@@ -290,6 +295,16 @@ function applyState(obj) {
 
   const sparseCheck = document.getElementById('sparseNotesCheck');
   if (sparseCheck) sparseCheck.checked = state.sparseNotes;
+
+  buildSingleChips(document.getElementById('hyperKawaiiChips'), KAWAII_LEVELS, state.hyperKawaii, (id) => {
+    state.hyperKawaii = id;
+    maybeRegenerate();
+  });
+
+  buildSingleChips(document.getElementById('yamiKawaiiChips'), KAWAII_LEVELS, state.yamiKawaii, (id) => {
+    state.yamiKawaii = id;
+    maybeRegenerate();
+  });
 
   buildMultiChips(document.getElementById('instChips'), INSTRUMENTS, state.insts, maybeRegenerate);
   buildSfxChips(document.getElementById('sfxChips'), SFX, state.sfx, maybeRegenerate);
@@ -433,6 +448,10 @@ function init() {
     state.melodyInst = MELODY_INSTRUMENTS[Math.floor(Math.random() * MELODY_INSTRUMENTS.length)].id;
     state.lockMelodyInst = Math.random() < 0.85; // 85%の確率で固定ON
     state.sparseNotes = Math.random() < 0.35; // 35%の確率で音数極小ON
+    // Kawaii要素もランダム選出
+    const kawaiiPool = ['none', 'none', 'light', 'full'];
+    state.hyperKawaii = kawaiiPool[Math.floor(Math.random() * kawaiiPool.length)];
+    state.yamiKawaii = kawaiiPool[Math.floor(Math.random() * kawaiiPool.length)];
     state.insts = new Set(sample(INSTRUMENTS, 2, 4));
     // ゲーム効果音と環境音からランダムに選出
     state.sfx = new Set(sample(SFX, 1, 3));
@@ -453,6 +472,8 @@ function init() {
     state.melodyInst = 'rhodes_chill';
     state.lockMelodyInst = true;
     state.sparseNotes = false;
+    state.hyperKawaii = 'none';
+    state.yamiKawaii = 'none';
     state.insts = new Set(['square_arp', 'funky_bass', 'lofi_drums']);
     state.sfx = new Set(['sfx_pikopiko', 'tape_click', 'vinyl_crackle']);
     state.density = 'occasional';

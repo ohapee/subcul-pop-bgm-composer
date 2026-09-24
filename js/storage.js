@@ -12,6 +12,8 @@ export function serializeState(state) {
     melodyInst: state.melodyInst || 'none',
     lockMelodyInst: Boolean(state.lockMelodyInst),
     sparseNotes: Boolean(state.sparseNotes),
+    hyperKawaii: state.hyperKawaii || 'none',
+    yamiKawaii: state.yamiKawaii || 'none',
     insts: [...state.insts],
     sfx: [...state.sfx],
     density: state.density || 'occasional',

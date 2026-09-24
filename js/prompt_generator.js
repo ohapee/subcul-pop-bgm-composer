@@ -21,6 +21,69 @@ function fmtTime(sec) {
 }
 
 /**
+ * Hyper-Kawaii & Yami-Kawaii 指示・タグ生成ヘルパー
+ */
+function getKawaiiDescriptor(hyper, yami, lang) {
+  const isHyper = hyper && hyper !== 'none';
+  const isYami = yami && yami !== 'none';
+
+  if (!isHyper && !isYami) {
+    return { text: '', tag: '' };
+  }
+
+  if (lang === 'ja') {
+    let tag = '';
+    let text = '';
+
+    if (isHyper && isYami) {
+      tag = '[Hyper×Yami 病み甘ハイブリッド] ';
+      if (hyper === 'full' && yami === 'full') {
+        text = '【Hyper × Yami 病み甘ハイブリッド全開】飛び切りのパステルキラキラな甘さと、裏に潜む儚いダークネス・退廃美が激しく交錯する「病みかわいい×超絶カワイイ」の極致。甘くて痛い中毒性あるドリームポップ空間。';
+      } else if (hyper === 'full') {
+        text = '【Hyper-Kawaii全開（隠し味にYami）】極限までパステルで甘くキュートな超絶カワイイ電脳ポップに、ほんのり切なく儚い影（微ダークなアンニュイ感）をブレンド。';
+      } else if (yami === 'full') {
+        text = '【Yami-Kawaii全開（隠し味にHyper）】深く切ない病みかわいいアンニュイ空間に、微かにキラリと光るパステルの甘さを散りばめた中毒性あるダークチル。';
+      } else {
+        text = 'パステルの甘さ（Hyper-Kawaii要素）と、どこか儚く切ない影（Yami-Kawaii要素）が絶妙に溶け合う病み甘ポップのアクセント。';
+      }
+    } else if (isHyper) {
+      tag = hyper === 'full' ? '[Ultra Hyper-Kawaii Pop] [Pastel Kawaii Aesthetic] ' : '[Hyper-Kawaii Touch] ';
+      text = hyper === 'full'
+        ? '【Hyper-Kawaii全開】極限まで甘く飛び切りキュートなHyper-Kawaiiスタイル。パステルピンクの電脳ポップ、キラキラ輝くベルチャイム、弾けるバブルシンセ、ドリーミーで愛らしさ溢れるメロディと世界観を前面に押し出す。'
+        : 'ほんのりパステル調のHyper-Kawaii要素（キラキラ感と甘く愛らしいベルやシンセの余韻）をブレンド。';
+    } else {
+      tag = yami === 'full' ? '[Yami-Kawaii Dark Chill] [Menhera Pastel Goth] ' : '[Yami-Kawaii Mood] ';
+      text = yami === 'full'
+        ? '【Yami-Kawaii全開】甘さの裏に毒と切なさを秘めた本格的なYami-Kawaii（病みかわいい）スタイル。デチューンされた不安定なトーン、深夜の孤独や儚さを思わせるアンニュイで微ダークなメロディ、可愛さと退廃美が同居する独特のメンヘラチル空間。'
+        : '隠し味としてほんのり切ないYami-Kawaii要素（少し影のあるアンニュイなトーンと儚いメロディ）を滲ませる。';
+    }
+
+    return { text, tag };
+  } else {
+    // 英語
+    let tag = '';
+    let text = '';
+
+    if (isHyper && isYami) {
+      tag = '[Hyper-Kawaii x Yami-Kawaii] [Pastel Goth Dream Pop] ';
+      text = 'A captivating juxtaposition of ultra-saccharine hyper-kawaii pastel sparkle and melancholic yami-kawaii darkness—sweet, edgy, and emotionally intoxicating pastel-goth aesthetic.';
+    } else if (isHyper) {
+      tag = hyper === 'full' ? '[Ultra Hyper-Kawaii Pop] [Pastel Kawaii Aesthetic] ' : '[Hyper-Kawaii Touch] ';
+      text = hyper === 'full'
+        ? 'Maximum hyper-kawaii aesthetic: overflowing pastel cuteness, sparkling bubbly synths, playful dream-pop sweetness, and irresistible sugary charm.'
+        : 'Subtly infused with hyper-kawaii pastel sweetness and sparkling dreamcore accents.';
+    } else {
+      tag = yami === 'full' ? '[Yami-Kawaii Dark Chill] [Menhera Pastel Goth] ' : '[Yami-Kawaii Mood] ';
+      text = yami === 'full'
+        ? 'Deeply atmospheric yami-kawaii aesthetic: poignant dark-cute melancholy, slightly detuned fragile melodies, alluring emotional vulnerability, and lonely midnight bedroom-chill nostalgia.'
+        : 'Delicately shaded with subtle yami-kawaii melancholy and wistful, moody pastel undertones.';
+    }
+
+    return { text, tag };
+  }
+}
+
+/**
  * 構成タイムラインの計算（作業BGM向け）
  */
 export function buildTimelineData(state) {
@@ -158,6 +221,8 @@ export function buildPrompt(state) {
   const isLocked = Boolean(state.lockMelodyInst);
   const isSparse = Boolean(state.sparseNotes);
 
+  const kawaii = getKawaiiDescriptor(state.hyperKawaii, state.yamiKawaii, state.lang);
+
   let prompt = '';
 
   if (state.lang === 'ja') {
@@ -186,18 +251,22 @@ export function buildPrompt(state) {
       sparseSentence = '★音数極小化指示: 思いっきり音の数を減らし、余白（隙間）と静寂を最大限に重視すること。音符を敷き詰めず、ポツリ…ポツリ…と一音一音を慈しむように鳴らす極めてシンプルなミニマル編成。音の密度を極限まで低くし、静けさの中に優しい響きだけが漂う引き算の音空間にすること。';
     }
 
+    // Kawaiiテイスト文
+    const kawaiiSentence = kawaii.text ? kawaii.text : '';
+
     if (aiTarget === 'suno_udio') {
       const titleTag = title ? `[Title: ${title}] ` : '';
       const leadTag = hasMelody ? `[Lead: ${melodyDef.enShort || melodyDef.en}] ` : '';
       const lockTag = isLocked ? `[Consistent Lead Throughout] [No Lead Switching] ` : '';
       const sparseTag = isSparse ? `[Ultra-Sparse Arrangement] [Minimalist Note Density] [Maximum Breathing Room] ` : '';
+      const kawaiiTag = kawaii.tag || '';
 
-      prompt = `${titleTag}[Genre: Neo Shibuya-kei, Chiptune Lofi Study Beat, City Pop Instrumental] [Tempo: ${state.tempo} BPM] [Key: ${key.baseNote}] ${leadTag}${lockTag}${sparseTag}\n` +
+      prompt = `${titleTag}[Genre: Neo Shibuya-kei, Chiptune Lofi Study Beat, City Pop Instrumental] [Tempo: ${state.tempo} BPM] [Key: ${key.baseNote}] ${leadTag}${lockTag}${sparseTag}${kawaiiTag}\n` +
         `${titlePrefix}作業・勉強がはかどるサブカルポップインストBGM。「${motif.ja}」の世界観。` +
-        `編成: ${instText}。${melodySentence}${lockSentence ? ' ' + lockSentence + ' ' : ''}${sparseSentence ? ' ' + sparseSentence + ' ' : ''}${key.ja}を使用${sfxText}。${focus.ja} 歌声なしのインスト限定。`;
+        `編成: ${instText}。${melodySentence}${lockSentence ? ' ' + lockSentence + ' ' : ''}${sparseSentence ? ' ' + sparseSentence + ' ' : ''}${kawaiiSentence ? ' ' + kawaiiSentence + ' ' : ''}${key.ja}を使用${sfxText}。${focus.ja} 歌声なしのインスト限定。`;
     } else {
       prompt = `${titlePrefix}テンポ${state.tempo}BPMのユニークで軽くポップな作業用BGM。「${motif.ja}」の雰囲気。` +
-        `編成は${instText}を中心とし、${melodySentence}${lockSentence ? ' ' + lockSentence + ' ' : ''}${sparseSentence ? ' ' + sparseSentence + ' ' : ''}${key.ja}のお洒落なコード感${sfxText}。` +
+        `編成は${instText}を中心とし、${melodySentence}${lockSentence ? ' ' + lockSentence + ' ' : ''}${sparseSentence ? ' ' + sparseSentence + ' ' : ''}${kawaiiSentence ? ' ' + kawaiiSentence + ' ' : ''}${key.ja}のお洒落なコード感${sfxText}。` +
         `${focus.ja} 歌声なしのインストゥルメンタル。`;
     }
 
@@ -232,17 +301,20 @@ export function buildPrompt(state) {
       sparseSentenceEn = ' CRITICAL RULE (Ultra-Sparse Note Density): Drastically reduce the number of notes. Maximize silence, negative space, and breathing room between minimal, delicate notes. Extremely sparse note density, strictly avoid crowded arrangements or busy phrases. A minimalist, stripped-down sonic space where notes fall like gentle, isolated drops with plenty of quiet space.';
     }
 
+    const kawaiiSentenceEn = kawaii.text ? ` ${kawaii.text}` : '';
+
     if (aiTarget === 'suno_udio') {
       const titleTag = title ? `[Title: ${title}] ` : '';
       const leadTag = hasMelody ? `[Lead: ${melodyDef.enShort || melodyDef.en}] ` : '';
       const lockTag = isLocked ? `[Consistent Lead Throughout] [No Lead Switching] ` : '';
       const sparseTag = isSparse ? `[Ultra-Sparse Arrangement] [Minimalist Note Density] [Maximum Breathing Room] ` : '';
+      const kawaiiTag = kawaii.tag || '';
 
-      prompt = `${titleTag}[Genre: Neo Shibuya-kei, 8-bit Chiptune Lofi, Japanese City Pop Instrumental, Study Beat] [Tempo: ${state.tempo} BPM] [Key: ${key.baseNote}] ${leadTag}${lockTag}${sparseTag}\n` +
-        `A stylish, bouncy and lighthearted instrumental study BGM${titleThemed} capturing ${motif.en}. Built on ${instText}.${melodySentenceEn}${lockSentenceEn}${sparseSentenceEn} Featuring ${key.en}.${sfxText} ${focus.en} Strictly instrumental with no vocals.`;
+      prompt = `${titleTag}[Genre: Neo Shibuya-kei, 8-bit Chiptune Lofi, Japanese City Pop Instrumental, Study Beat] [Tempo: ${state.tempo} BPM] [Key: ${key.baseNote}] ${leadTag}${lockTag}${sparseTag}${kawaiiTag}\n` +
+        `A stylish, bouncy and lighthearted instrumental study BGM${titleThemed} capturing ${motif.en}. Built on ${instText}.${melodySentenceEn}${lockSentenceEn}${sparseSentenceEn}${kawaiiSentenceEn} Featuring ${key.en}.${sfxText} ${focus.en} Strictly instrumental with no vocals.`;
     } else {
       prompt = `A breezy ${state.tempo} BPM instrumental study track${titleThemed} with ${motif.en}. ` +
-        `Structured around ${instText}.${melodySentenceEn}${lockSentenceEn}${sparseSentenceEn} Driven by ${key.en}.${sfxText} ` +
+        `Structured around ${instText}.${melodySentenceEn}${lockSentenceEn}${sparseSentenceEn}${kawaiiSentenceEn} Driven by ${key.en}.${sfxText} ` +
         `${focus.en} Instrumental only, zero distractions.`;
     }
 
@@ -265,6 +337,8 @@ export function buildNegativePrompt(state) {
   const selected = pick(NEGATIVE_OPTIONS, [...state.negatives]);
   const isLocked = Boolean(state.lockMelodyInst);
   const isSparse = Boolean(state.sparseNotes);
+  const isHyperFull = state.hyperKawaii === 'full';
+  const isYamiFull = state.yamiKawaii === 'full';
 
   if (state.lang === 'ja') {
     let parts = selected.map(n => n.ja);
@@ -273,6 +347,12 @@ export function buildNegativePrompt(state) {
     }
     if (isLocked && !state.negatives.has('lead_switching')) {
       parts.push('主旋律楽器の途中交代・メロディ音色の急変');
+    }
+    if (isHyperFull && !isYamiFull) {
+      parts.push('泥臭い・暗すぎる不穏なトーン');
+    }
+    if (isYamiFull && !isHyperFull) {
+      parts.push('過剰に能天気な明るさ・軽薄なポップ感');
     }
     if (parts.length === 0) return '';
     return '【作業集中用・除外指示】' + parts.join('、') + 'は一切含めず、集中しやすいインストゥルメンタルにすること。';
@@ -284,6 +364,12 @@ export function buildNegativePrompt(state) {
   }
   if (isLocked && !state.negatives.has('lead_switching')) {
     enList.push('switching lead instruments, sudden melody timbre change, rotating leads');
+  }
+  if (isHyperFull && !isYamiFull) {
+    enList.push('gritty, muddy, aggressive dissonance, depressing gloom');
+  }
+  if (isYamiFull && !isHyperFull) {
+    enList.push('overly cheerful slapstick, cheesy sunshine, corporate upbeat');
   }
   return enList.join(', ');
 }

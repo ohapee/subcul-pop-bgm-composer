@@ -252,6 +252,16 @@ h2 .badge {
   color: #ffffff;
 }
 
+#hyperKawaiiChips .chip.on {
+  background: #ec4899;
+  color: #ffffff;
+}
+
+#yamiKawaiiChips .chip.on {
+  background: var(--purple-cassette);
+  color: #ffffff;
+}
+
 #instChips .chip.on {
   background: var(--blue-cyber);
   color: #0f172a;
